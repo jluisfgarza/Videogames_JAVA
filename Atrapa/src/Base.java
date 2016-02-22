@@ -1,12 +1,13 @@
+
 /**
  * Base
  *
  * Modela la definición de todos los objetos de tipo
  * <code>Base</code>
  *
- * @author Juan Luis Flores
- * @version V1.5
- * @date 2/2/16
+ * @author 
+ * @version 
+ * @date 
  */
 import java.awt.Graphics;
 import java.awt.Image;
@@ -36,7 +37,7 @@ public class Base {
      * @param imaImagen es la <code>imagen</code> del objeto.
      * 
      */
-    public Base(int iX, int iY ,  Image imaImagen ) {
+    public Base(int iX, int iY ,  Image imaImagen) {
         this.iX = iX;
         this.iY = iY;
         this.imaImagen = imaImagen;
@@ -211,48 +212,25 @@ public class Base {
      *      </code> si no colisiona
      *
     */
-
-    
     
     public boolean colisiona(Object obj){
         //checo si el objeto es de la clase base
         if(obj instanceof Base){
-           //Se crea un rectangulo personalizado para el objeto para logar que
-           //colisione solo la parte superior dle mismo y no de sus lados. 
-           Rectangle recEste = new Rectangle(getX()+70, getY()-1, 10, 3);
-           //Se revisa colision del segundo objeto con dicho rectangulo
-           //este rectangulo tambien está modificado para ocupar la parte
-           //inferior del objeto malo.
-           Rectangle recOtro = new Rectangle(((Base) obj).getX(),
-                   ((Base) obj).getY()+50, 100, 
-                   3);
-           return recEste.intersects(recOtro);
+            // se crea un rectangulo para el objeto
+            Rectangle recEste = new Rectangle(getX(), getY(), getAncho(), 
+                   getAlto());
+            // se crea un rectangulo para obj del parametro  
+            Rectangle recOtro = new Rectangle(((Base) obj).getX(),
+                   ((Base) obj).getY(), ((Base)obj).getAncho(), 
+                   ((Base) obj).getAlto());
+            // se regresa true si se intersectan
+            return recEste.intersects(recOtro);
        }
         else {
             return false;
         }
+    }
     
-}
     
-    /**
-     *Colisiona
-     *
-     *Checa la colision con un objeto base
-     *
-     * @param iX valor <code>integer</code> que representa la x a revisar
-     * @param iY valor <code>integer</code> que representa la y a revisar
-     * @return boleano <code> true</code> si colisiona <code> false
-     *      </code> si no colisiona
-     *
-    */
     
-    public boolean colisiona(int iX, int iY){
-        //checo si el objeto es de la clase base
-       
-           Rectangle recEste = new Rectangle(getX(), getY(), getAncho(), 
-                   getAlto());
-           return recEste.contains(iX, iY);
-        
-    
-}
 }

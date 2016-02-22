@@ -1,211 +1,213 @@
+/*
+Autores:
+Version:
+Fecha:
+*/
 
+//Librerias
 import java.applet.Applet;
+import java.applet.AudioClip;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
-import java.applet.AudioClip;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
+import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
-/**
- * @author Juan Luis Flores
- * @version 2.0
- * @date 2/2/2016
- */
- 
-    public class Juego3 extends Applet implements Runnable, KeyListener, 
-            MouseListener, MouseMotionListener{
+public class Juego3 extends JFrame implements Runnable, KeyListener {
+    /* Defino tamaño del applet */
+    private static final int WIDTH = 1000;      //Ancho del JFrame
+    private static final int HEIGHT = 600;      //Alto del JFrame
 
-    private Base basPlaneta;            // Objeto planeta
-    private LinkedList<Base> lklMalos;  //creo que la lista para los malos    
-    private AudioClip aChoque;          //Objeto de sonido para la colision 
-                                        //del planeta con los asteroides 
-    private int iVidas;                 //Vidas del planeta
-    private Image imaGameOver;          //Imagen en caso de perder
-   
-    //Variables de velocidad
-    private int iAumenX;                // Incremento en x
-    private int iAumenY;                // Incremento en y  
+    private Base basPrincipal;                  // Objeto principal
+    private LinkedList<Base> lklMalos;          //Linked list malos    
+    private Image imaImagenFondo;               // para dibujar la imagen de fondo
     
-    //Posicion del mouse
-    private int iPosX;                  //posicion x del mouse
-    private int iPosY;                  //posicion y del mous   
+    /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
+    private Image    imaImagenApplet;       // Imagen a proyectar en Applet	
+    private Graphics graGraficaApplet;      // Objeto grafico de la Imagen
+    private AudioClip sonidoPain;           // Sonido de colision con malos    
     
-    //Variables de imagen
-    private Image imaImagenFondo;       // para dibujar la imagen de fondo
-    private Image    imaImagenApplet;   // Imagen a proyectar en Applet	
-    private Graphics graGraficaApplet;  // Objeto grafico de la Imagen    
+    /* variables para controlar movimiento */
+    private int iDireccion;                 // Direccion de principal
     
-    //Variables offset para desface del mouse con la imagen.
-    private int iOffX;                  //offset eje x
-    private int iOffY;                  //offset eje y
-    private boolean bDragged;           //boleana check drag
-    private int iScore;                 //Score del planeta
-    private int iContAste;              //contador de asteroidesa tocan borde
-                                        //inferior. 
-    private AudioClip bChoque;          //Objeto de sonido para la colision
-                                        //asteroides con borde inferior
+    /* variable e imagen para el control de vidas */
+    private int iVidas;
+    private int iContColisionMalo;
+    private Image imaGameOver;
+    
+    /* variable para el control de puntos */
+    private int iPuntos;
+    
+    private Vector vecPuntaje;    // Objeto vector para agregar el puntaje.
+    private String sNombreArchivo;    //Nombre del archivo.
+    private String[] arrArchivo;    //Arreglo del archivo divido.
+    
+    //Guarde el numero de malos y buenos
+    private int iRandMalos;
 
+    public Juego3(){
+        sNombreArchivo = "Puntaje.txt"; // Inicializamos con el nombre del arch
+        vecPuntaje = new Vector();      // creamos el vector
+        
+        // Inicializamos el contador con un random entre 3 y 5
+        iVidas = (int) (Math.random() * 3) + 3;
+        
+        // Inicializamos el contador de las colisiones de los malos
+        iContColisionMalo = 0;
+               
+        iPuntos = 0;    // Inicializamos los puntos en 0
+                
+        addKeyListener(this);           // Añadir KeyListener       
+        inicializoPrincipal();          // inicializo principal        
+        inicializoMalos();              // inicializo malos        
+        inicializoSonidos();            // inicializo sonidos        
+        inicializoImagenes();           // inicializo imagenes        
+        Thread th = new Thread (this);  // Declaras un hilo        
+        th.start ();                    // Empieza el hilo
+    }
     
-   
-    
-    	
     /** 
-     * init
+     * inicializoImagenes
      * 
-     * Metodo sobrescrito de la clase <code>Applet</code>.<P>
-     * En este metodo se inizializan las variables o se crean los objetos
-     * a usarse en el <code>Applet</code> y se definen funcionalidades.
+     * Metodo que inicializa las imagenes de Fondo y Game Over
      * 
      */
-    public void init() {
-        // asigna tamaño del applet
-        setSize(1000,600);
-        lklMalos = new LinkedList<Base>();
-        int iRandom = (int)(Math.random() * 4)+7;
-        iVidas = 5;             //Asignamos la cantidad de vidas del planeta
-        iScore = 0;             //Asignamos el score del planeta a 0
-        iContAste = 0;          //contador de asteroides que tocan suelo
-        bDragged = false;
-        //inicializo los ajustes de desface de coordenadas del mouse
-        iOffX = 0;
-        iOffY = 0;
-                 
-        // defino la imagen principal
-	URL urlImagenPrincipal = this.getClass().getResource("Cannon.png");
-		
+    public void inicializoImagenes() {
         // Creo la imagen de fondo.
         URL urlImagenFondo = this.getClass().getResource("fondo.png");
         imaImagenFondo = Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
-               
-        // Creo el objeto para principal 
-	basPlaneta = new Base(0, 0,
-                Toolkit.getDefaultToolkit().getImage(urlImagenPrincipal));
-               
-        // posiciono a principal  en posición aleatoria 
-        iPosX = (int)(Math.random() * (getWidth() / 4));
-        iPosY = (int)(Math.random() * (getWidth() / 4));
-        basPlaneta.setX(iPosX);
-        basPlaneta.setY(iPosY);      
         
-        // Define el sonido que se reproducirá
-        //Sonido choque asteroide con la tierra
-        URL eaURL = this.getClass().getResource("Explosion.wav");
-        aChoque = getAudioClip (eaURL);
-        //sonido choque asteroide con el borde inferios
-        URL eaURL2 = this.getClass().getResource("error.wav");
-        bChoque = getAudioClip (eaURL2);        
-        //Se crea la imagen del asteroide
-        URL urlImagenMalo = this.getClass().getResource("piedra.gif");
-        //creo a los malos 
-        for (int iI = 0; iI < iRandom; iI++){
-            //creo a un malo
-            Base basMalo = new Base(0, 0,
-                Toolkit.getDefaultToolkit().getImage(urlImagenMalo));
-            //lo añado a la lista
+        // Creo la imagen del Game Over
+        URL urlImagenGameOver = this.getClass().getResource("gameover.jpg");
+        imaGameOver = Toolkit.getDefaultToolkit().getImage(urlImagenGameOver);
+    }
+    
+    /** 
+     * inicializoSonidos
+     * 
+     * Metodo que inicializa los sonidos
+     * 
+     */
+    public void inicializoSonidos() {        
+        // Creo el sonido de vida menos
+        URL eaURL2 = Juego3.class.getResource("Explosion.wav");
+        sonidoPain = Applet.newAudioClip(eaURL2);
+    }
+    
+    /** 
+     * inicializoPrincipal
+     * 
+     * Metodo que inicializa a Principal
+     * 
+     */
+    public void inicializoPrincipal() {
+        // Defino la imagen de principal.
+        URL urlImagenPrincipal = this.getClass().getResource("earth.gif");
+        
+        // Creo el objeto principal 
+	basPrincipal = new Base(0, 0, 
+                Toolkit.getDefaultToolkit().getImage(urlImagenPrincipal));
+
+        // Posiciono al objeto principal
+        basPrincipal.setX((getWidth() - basPrincipal.getAncho()) / 2);
+        basPrincipal.setY((getHeight() - basPrincipal.getAlto()));
+    }
+    
+    /** 
+     * inicializoMalos
+     * 
+     * Metodo que inicializa a todos los malos
+     * 
+     */
+    public void inicializoMalos() {
+        /* creo la lista de los malos */
+        lklMalos = new LinkedList<Base>();
+        
+        /* genero el random de los malos entre 8 y 10 */
+        iRandMalos = (int)(Math.random() * 3) + 8;
+        int iRanMalos = iRandMalos;
+        
+        // Defino la de los malos.
+	URL urlImagenMalos = this.getClass().getResource("piedra.gif");
+        
+        // Creo a los malos
+        for(int iI = 0; iI < iRanMalos; iI++){
+            // Creo a un malo
+            Base basMalo = new Base (0, 0, 
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos));
+            // Añado al malo a la lista
             lklMalos.add(basMalo);
         }
         
-        //ESTE METODO NO ES NECESARIO EN ESTE JUEGO. 
-        //posiciono al asteroide en posicion aleatoria
-        /*basAsteroide.setX((int)(Math.random()*(getWidth()-
-                basAsteroide.getAncho())));
-        basAsteroide.setY((int)(Math.random()*(getHeight()-
-                basAsteroide.getAlto())));*/
-        
-        //imagen al finalizar el juego
-        URL urlGameOver = this.getClass().getResource("gameover.jpg");
-        imaGameOver = Toolkit.getDefaultToolkit().getImage(urlGameOver);
-        
-        //Se añaden los escuchadores
-        addKeyListener(this);
-        addMouseMotionListener(this);
-        addMouseListener(this);
-        
-        //Posiciono los objetos en el applet con la llamada a este metodo. 
-        reposiciona();
-    }
-    
-   /*
-    * reposiciona
-    *
-    *
-    *reposiciona el principal y el malo 
-    *
-    */
-    public void reposiciona(){
-       //Posiciono el planeta en la parte inferior del applet
-        iPosX = (int)(Math.random() * (getWidth() / 4));
-        iPosY = (1000/2);
-        basPlaneta.setX(iPosX);
-        basPlaneta.setY(iPosY);
-        
-        //reposiciona a cada malo de la lista en la parte superior del applet
+        // Posiciono a los malos
         for (Base basMalo : lklMalos){
-            basMalo.setX((int)(Math.random() * (getWidth() -
-                basMalo.getAncho())));
-            basMalo.setY((int)(Math.random() * (getHeight() -
-                basMalo.getAlto()))-600);
+            basMalo.setX((int)(Math.random() * (getWidth() - basMalo.getAncho())));
+            basMalo.setY((int)(Math.random() * (getHeight() - basMalo.getAlto()))-500);
         }
-        
     }
     
-    
-	
-    /** 
-     * start
-     * 
-     * Metodo sobrescrito de la clase <code>Applet</code>.<P>
-     * En este metodo se crea e inicializa el hilo
-     * para la animacion este metodo es llamado despues del init o 
-     * cuando el usuario visita otra pagina y luego regresa a la pagina
-     * en donde esta este <code>Applet</code>
-     * 
+    /**
+     * @param args the command line arguments
      */
-    public void start () {
-        // Declaras un hilo
-        Thread th = new Thread (this);
-        // Empieza el hilo
-        th.start ();
+    public static void main(String[] args) {
+        // TODO code application logic here
+        Juego3 jfrmJuego = new Juego3();
+        jfrmJuego.setSize(WIDTH,HEIGHT);
+        jfrmJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jfrmJuego.setVisible(true);
     }
-	
+
     /** 
      * run
      * 
      * Metodo sobrescrito de la clase <code>Thread</code>.<P>
-     * En este metodo se ejecuta el hilo, que contendrÃ¡ las instrucciones
+     * En este metodo se ejecuta el hilo, que contendrá las instrucciones
      * de nuestro juego.
      * 
      */
-    public void run () {
+    public void run() {
         /* mientras dure el juego, se actualizan posiciones de jugadores
            se checa si hubo colisiones para desaparecer jugadores o corregir
            movimientos y se vuelve a pintar todo
         */ 
-        while (true && iVidas >0) {
+        while (iVidas > 0) {
             actualiza();
             checaColision();
             repaint();
             try	{
                 // El hilo del juego se duerme.
-                Thread.sleep (20);
+                Thread.sleep (40);
             }
             catch (InterruptedException iexError) {
                 System.out.println("Hubo un error en el juego " + 
                         iexError.toString());
             }
-		}
-        
+	}        
+        // pide el nombre de usuario              
+                try {
+                      leeArchivo();    //lee el contenido del archivo                      
+                      grabaArchivo();
+                } 
+                catch(IOException e) {
+                      System.out.println("Error en " + e.toString());
+                }
     }
-	
+    
     /** 
      * actualiza
      * 
@@ -213,127 +215,110 @@ import java.util.LinkedList;
      * 
      */
     public void actualiza(){
-        //para actualizar posicion de la imagen principal al hacer click
-        if (bDragged)
-        {
-            basPlaneta.setX(iPosX - iOffX);
-            basPlaneta.setY(iPosY - iOffY);
-        }
-        
-        //actualizo la velocidad del asteroide segun las vidas
-        if (iVidas == 5)
-        {
-            iAumenX = 1;
-            iAumenY = 1;
-        }
-        if (iVidas == 3)
-        {
-            iAumenX = 4;
-            iAumenY = 4;
-        }
-        if (iVidas == 2)
-        {
-            iAumenX = 6;
-            iAumenY = 6;
+
+        // Mueve a principal dependiendo de la dirección
+        switch (iDireccion) {
+            case 1:
+                basPrincipal.setX(basPrincipal.getX() - 6);
+                break;
+            case 2:
+                basPrincipal.setX(basPrincipal.getX() + 6);
+                break;            
+            default:
+                break;
         }        
-        //se asigna una vleocidad nueva a la caida de asteroides
+        actualizaMalos(); // actualizamos buenos y malos
+    }
+    
+    /** 
+     * actualizaBuenosyMalos
+     * 
+     * Metodo que actualiza la posicion de los malos 
+     * 
+     */
+    public void actualizaMalos() {
         for (Base basMalo : lklMalos){
-          basMalo.setY(basMalo.getY()+iAumenY);
+            /* genero el random de la velocidad del malo entre 3 y 5 */
+            int iRanVelocidad = (int) (Math.random() * 3) + 3;            
+            // Se actualiza la posicion del bueno
+            basMalo.setY(basMalo.getY() + iRanVelocidad); 
         }
     }
-	
+
     /**
      * checaColision
      * 
-     * Metodo usado para checar la colision entre objetos
+     * Metodo usado para checar la colision entre objetos.
      * 
      */
     public void checaColision(){
-        //revisa que el planeta no pueda salir del marco
-        if (basPlaneta.getX() <= 0) {
-            basPlaneta.setX(0);
+        
+        // Checa que el principal no salga del marco
+        if (basPrincipal.getX() <= 0) {
+            basPrincipal.setX(0);
         } 
-        if (basPlaneta.getX() + basPlaneta.getAncho() >= getWidth() ) {
-            basPlaneta.setX(getWidth() - basPlaneta.getAncho());
+        if (basPrincipal.getX() + basPrincipal.getAncho() >= getWidth() ) {
+            basPrincipal.setX(getWidth() - basPrincipal.getAncho());
         }
-        //limita el movimiento en el eje y a solo 600 del a altura del applet
-        if (basPlaneta.getY() <= 0){
-            basPlaneta.setY(0);
+        if (basPrincipal.getY() <= 0){
+            basPrincipal.setY(0);
         }
-        if (basPlaneta.getY() + basPlaneta.getAlto() >= getHeight()){
-            basPlaneta.setY(getHeight() - basPlaneta.getAlto());
-        }
-        
-        for (Base basMalo : lklMalos){
-        //Se revisa colisión del asteroide con los bordes
-            if (basMalo.getX() + basMalo.getAncho() > getWidth()) {
-                basMalo.setX(basMalo.getX() - iAumenX);
-            }                                   
-            if (basMalo.getX() < 0) {
-                basMalo.setX(basMalo.getX() - iAumenX);
-            }          
-            
-           // colision del asteroide con el borde inferior            
-            if (basMalo.getY() + basMalo.getAlto() > getHeight()) {
-               basMalo.setY(basMalo.getY() - iAumenY);
-               iScore-=20;
-               //si colisionan mas de 10 se pierde una vida 
-               if (iContAste > 10)
-               {
-                   iVidas--;
-                   //reset para el contador de colisiones
-                   iContAste = 0;
-               }
-               
-               if (iContAste <= 10)               
-               {
-                   //contar las colisiones 
-                   iContAste++;
-               }
-                              
-                bChoque.play();
-                //al colisiona un objeto malo se reposiciona en la parte
-                //superior del applet y se le da una nueva posicion aleatoria 
-                //en el eje x
-                basMalo.setY(basMalo.getY()-600);
-                basMalo.setX((int)(Math.random() * (getWidth() -
-                basMalo.getAncho())));
-            }
-           
-           //colision superior
-           /*
-            if (basMalo.getY() < 0) {
-                basMalo.setX(basMalo.getY() - iAumenY);
-            }*/
+        if (basPrincipal.getY() + basPrincipal.getAlto() >= getHeight()){
+            basPrincipal.setY(getHeight() - basPrincipal.getAlto());
         }
         
-        for (Base basMalo : lklMalos){
-        //reviso colision entre bueno y malo 
-            if (basPlaneta.colisiona(basMalo) ){                
-                iScore+= 100;
-                aChoque.play();
-                //al colisiona un objeto malo se reposiciona en la parte
-                //superior del applet y se le da una nueva posicion aleatoria 
-                //en el eje x
-                basMalo.setY(basMalo.getY()-600);
-                basMalo.setX((int)(Math.random() * (getWidth() -
-                basMalo.getAncho())));
-            }          
-        }
+        // Llamamos a la funcion para checar las colisiones de los malos
+        checaColisionMalos();
     }
     
     /**
-     * update
+     * checaColisionMalos
      * 
-     * Metodo sobrescrito de la clase <code>Applet</code>,
-     * heredado de la clase Container.<P>
-     * En este metodo lo que hace es actualizar el contenedor y 
-     * define cuando usar ahora el paint
+     * Metodo usado para checar la colision de los malos.
+     * 
+     */
+    public void checaColisionMalos(){
+        for (Base basMalo : lklMalos) {
+            // Checa si algun malo llego hasta el lado izquierdo
+            if (basMalo.getY() >= 500 +basMalo.getAlto()) {
+                // Se reposiciona malo
+                basMalo.setX((int)(Math.random() * (getWidth() - 
+                        basMalo.getAncho())));
+                basMalo.setY(basMalo.getY()-600);
+            }
+
+            // Checar si malo colisiona con el principal
+            if (basPrincipal.colisiona(basMalo)){
+                iContColisionMalo++; // Sumar una colision al contador
+                
+                // Se reposiciona el malo
+                basMalo.setX((int)(Math.random() * (getWidth() -
+                        basMalo.getAncho())));
+                basMalo.setY(basMalo.getY()-600);
+                
+                // Checamos si ya van 5 colisiones
+                if (iContColisionMalo == 5) {
+                    iVidas--; // Quitamos una vida
+                    iContColisionMalo = 0; // Se pone el contador  en 0
+                    sonidoPain.play();// Suena efecto cuando se pierde una vida
+                }
+            }  
+        }
+    }
+    
+    
+    /**
+     * paint
+     * 
+     * Metodo sobrescrito de la clase <code>JFrame</code>,
+     * heredado de la clase Window.<P>
+     * En este metodo lo que hace es actualizar la ventana y 
+     * define cuando usar ahora el paint1
      * 
      * @param graGrafico es el <code>objeto grafico</code> usado para dibujar.
      * 
      */
-    public void update (Graphics graGrafico){
+    public void paint (Graphics graGrafico){
         // Inicializan el DoubleBuffer
         if (imaImagenApplet == null){
                 imaImagenApplet = createImage (this.getSize().width, 
@@ -343,122 +328,202 @@ import java.util.LinkedList;
 
         // Actualiza la imagen de fondo.
         URL urlImagenFondo = this.getClass().getResource("fondo.png");
-        Image imaImagenFondo = 
-                Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
-         graGraficaApplet.drawImage(imaImagenFondo, 0, 0, getWidth(),
-                 getHeight(), this);
-         
-         
+        Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
+        graGraficaApplet.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);
 
         // Actualiza el Foreground.
         graGraficaApplet.setColor (getForeground());
-        paint(graGraficaApplet);
+        paint1(graGraficaApplet);
 
         // Dibuja la imagen actualizada
         graGrafico.drawImage (imaImagenApplet, 0, 0, this);
-        
-            
     }
     
-    
     /**
-     * paint
+     * paint1
      * 
      * Metodo sobrescrito de la clase <code>Applet</code>,
      * heredado de la clase Container.<P>
      * En este metodo se dibuja la imagen con la posicion actualizada,
      * ademas que cuando la imagen es cargada te despliega una advertencia.
      * 
-     * @param graDibujo es el objeto de <code>Graphics</code> usado paradibujar.
+     * @param graDibujo es el objeto de <code>Graphics</code> usado para dibujar.
      * 
      */
-    public void paint(Graphics graDibujo) {
-        
-        if (iVidas > 0){
-        // si la imagen ya se cargo
-            if (basPlaneta != null && imaImagenFondo != null && 
-                lklMalos != null) {
-        	    // Dibuja la imagen de fondo
-        	    graDibujo.drawImage(imaImagenFondo, 0, 0, getWidth(), 
-                            getHeight(), this);
-                //Dibuja la imagen de principal en el Applet
-                basPlaneta.paint(graDibujo, this);
-                //dibujo al malo
-                for(Base basMalo : lklMalos){
-                    basMalo.paint(graDibujo, this);
-                }
-                graDibujo.setFont(new Font("Arial",Font.BOLD,20));
-                //Se dibuja el texto con la vidas y el score del juego
-                graDibujo.setColor(Color.white);
-                graDibujo.drawString("Tienes " + iVidas + " vidas", 30, 30);
-                graDibujo.drawString("Score: " + iScore , 220, 30);
-            } // sino se ha cargado se dibuja un mensaje 
+    public void paint1(Graphics graDibujo) {
+        if (iVidas > 0) {
+            // si la imagen ya se cargo
+            if (basPrincipal != null && imaImagenFondo != null && 
+                    lklMalos != null) {
+                // llamamos funcion que dibuja el juego
+                dibujarJuego(graDibujo);
+            } // si no se ha cargado se dibuja un mensaje 
             else {
-                //Da un mensaje mientras se carga el dibujo	
-                graDibujo.drawString("No se cargo la imagen..", 20, 20);
-            }        
-        }
-        else{
-            //dibujo la imagen de fin de juego
-         graDibujo.drawImage(imaGameOver, 0, 0, this);
-        }
+                // Da un mensaje mientras se carga el dibujo	
+                graDibujo.drawString("No se cargo la imagen..", 20, 50);
+            }
+        } else {
+            // dibujo la imagen de fin de juego
+            graDibujo.drawImage(imaGameOver, 0, 0, getWidth(), getHeight(), this);
+            // muestra puntaje	
+            
+            graDibujo.setFont(new Font("Arial",Font.BOLD,20));
+            graDibujo.setColor(Color.white);
+            graDibujo.drawString("Puntaje final: " + iPuntos, 30, 50);
+        } 
+    }
+    
+    /**
+     * dibujarJuego
+     * 
+     * En este metodo se dibuja la imagen del juego.
+     * 
+     * @param graDibujo es el objeto de <code>Graphics</code> usado para dibujar.
+     * 
+     */
+    public void dibujarJuego(Graphics graDibujo){
+        // Dibuja la imagen de fondo
+        graDibujo.drawImage(imaImagenFondo, 0, 0, getWidth(),getHeight(), this);
+        //Dibuja la imagen de principal en el Applet
+        basPrincipal.paint(graDibujo, this);
+        // Dibujo al malo
+        for (Base basMalo : lklMalos){
+            basMalo.paint(graDibujo, this);
+        }        
+        // Dibujamos el texto con las vidas y el puntaje
+        graDibujo.setColor(Color.white);
+        graDibujo.fillRect(0,15,1000,40);
+        graDibujo.drawRect(0,15,1000,40);
+        graDibujo.setFont(new Font("Arial",Font.BOLD,14));
+        graDibujo.setColor(Color.black);        
+        graDibujo.drawString("Vidas: " + iVidas + "  ||  Puntos: " + iPuntos , 35, 50);
     }
 
-
     @Override
-    public void mousePressed(MouseEvent mouEvent) {
-        //Se guardan las coordenadas del mouse.
-        iPosX= mouEvent.getX();
-        iPosY = mouEvent.getY();        
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouEvent) 
-    {
-        bDragged = false;
-    }
-
-
-    @Override
-    public void mouseDragged(MouseEvent mouEvent) {
-        //En caso de no mover le mouse y hacer click al personaje, se 
-        //actualiza el offset.
-        if (!bDragged && basPlaneta.colisiona(iPosX, iPosY)){
-            iOffX = mouEvent.getX() - basPlaneta.getX();
-            iOffY = mouEvent.getY() - basPlaneta.getY();
-            bDragged = true;
-        }
-        //actualizo las posiciones del mouse al arrastrar
-        iPosX= mouEvent.getX();
-        iPosY = mouEvent.getY();
+    public void keyTyped(KeyEvent keyEvent) {
         
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void keyPressed(KeyEvent keyEvent) {
+        /* Dependiendo de si el usuario da click en la flecha izq o derecha se 
+        le asigna una direccion a Principal */
+        if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
+            iDireccion = 1;
+        } else if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT){
+            iDireccion = 2;
+        } 
+         else if (keyEvent.getKeyCode() == KeyEvent.VK_G){
+            
+            // pide el nombre de usuario                
+                try {
+                grabaArchivo();
+            } 
+            catch(IOException e) {
+            }
+         }
+         else if (keyEvent.getKeyCode() == KeyEvent.VK_C){
+             try {
+                leeArchivo();    //lee el contenido del archivo             
+             }
+             catch(IOException e){                
+             }        
+        }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyReleased(KeyEvent keyEvent) {
+        // Se cambia la dirección de Principal a 0 para que no se mueva
+        iDireccion = 0;
     }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
+    
+    /**
+     * getWidth
+     * 
+     * Metodo de acceso que regresa el ancho de la pantalla
+     * 
+     * @return un <code>entero</code> que es el ancho de la pantalla.
+     * 
+     */
+    public int getWidth(){
+        return WIDTH;
     }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
+    
+    /**
+     * getHeight
+     * 
+     * Metodo de acceso que regresa la altura de la pantalla
+     * 
+     * @return un <code>entero</code> que es la altura de la pantalla.
+     * 
+     */
+    public int getHeight(){
+        return HEIGHT;
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
+    /**
+     * leerArchivo
+     * 
+     * Se encarga de leer el contenido
+     * 
+     */
+    public void leeArchivo() throws IOException {
+                                                       
+        BufferedReader fileIn;
+        
+        try {
+            fileIn = new BufferedReader(new FileReader(sNombreArchivo));
+        } catch (FileNotFoundException e){
+            File flePuntos = new File(sNombreArchivo);
+            PrintWriter fileOut = new PrintWriter(flePuntos);
+            fileOut.close();
+            fileIn = new BufferedReader(new FileReader(sNombreArchivo));
+        }
+        
+        String sDato = fileIn.readLine(); 
+        if (sDato != null)
+        {
+            iVidas = Integer.parseInt(sDato);
+            sDato = fileIn.readLine();
+            iPuntos = Integer.parseInt(sDato);
+            basPrincipal.setX(Integer.parseInt(fileIn.readLine()));
+            basPrincipal.setY(Integer.parseInt(fileIn.readLine()));
+                               
+            iRandMalos = Integer.parseInt(fileIn.readLine());
+            lklMalos.clear();
+            // Creo a los malos
+            URL urlImagenMalos = this.getClass().getResource("piedra.gif");
+            for(int iI = 0; iI < iRandMalos; iI++){
+            // Creo a un malo
+            Base basMalo = new Base (Integer.parseInt(fileIn.readLine()), Integer.parseInt(fileIn.readLine()), 
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos));
+            // Añado al malo a la lista
+            lklMalos.add(basMalo);
+            }
+        }
+              
+        fileIn.close();                
+               
     }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    /**
+     * grabaArchivo 
+     * 
+     * Su función es guardar el contenido
+     * 
+     */
+    public void grabaArchivo() throws IOException {
+                                                          
+        PrintWriter fpw = new PrintWriter(new FileWriter(sNombreArchivo));                       
+        fpw.println(iVidas);
+        fpw.println(iPuntos);
+        fpw.println(basPrincipal.getX());
+        fpw.println(basPrincipal.getY());
+        fpw.println(iRandMalos);
+        for(Base basMalo : lklMalos) {
+            fpw.println(basMalo.getX());
+            fpw.println(basMalo.getY());
+        }
+        fpw.close();
     }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    
+    
 }
