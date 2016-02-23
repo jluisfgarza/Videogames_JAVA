@@ -48,7 +48,10 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     private int iVidas;
     private int iContColisionMalo;
     private Image imaGameOver;
+    
+    //dibujar corazoners
     private Image imaCora;
+    private int espaciadox;
     
     /* variable para el control de puntos */
     private int iPuntos;
@@ -101,6 +104,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         // Creo la imagen de vidas
         URL urlImagenCora = this.getClass().getResource("Heart.png");
         imaCora = Toolkit.getDefaultToolkit().getImage(urlImagenCora);
+        espaciadox = 20;
     
     }    
     
@@ -393,8 +397,37 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         graDibujo.drawRect(0,15,1000,40);
         graDibujo.setFont(new Font("Arial",Font.BOLD,14));
         graDibujo.setColor(Color.black);
-        graDibujo.drawImage(imaCora,10,40,this);
-        graDibujo.drawString("    x  "+iVidas+ "      Puntos: " + iPuntos , 10, 50);        
+        
+        switch (iVidas)
+        {
+            case 1:
+                graDibujo.drawImage(imaCora,espaciadox,40,this);                    
+            break;
+            case 2:
+                graDibujo.drawImage(imaCora,espaciadox,40,this);    
+                graDibujo.drawImage(imaCora,espaciadox+10,40,this);                
+            break;
+            case 3:
+                graDibujo.drawImage(imaCora,espaciadox,40,this);    
+                graDibujo.drawImage(imaCora,espaciadox+10,40,this);
+                graDibujo.drawImage(imaCora,espaciadox+20,40,this);                
+            break;
+            case 4:
+                graDibujo.drawImage(imaCora,espaciadox,40,this);    
+                graDibujo.drawImage(imaCora,espaciadox+10,40,this);
+                graDibujo.drawImage(imaCora,espaciadox+20,40,this);
+                graDibujo.drawImage(imaCora,espaciadox+30,40,this);                
+            break;            
+            case 5:
+                graDibujo.drawImage(imaCora,espaciadox,40,this);    
+                graDibujo.drawImage(imaCora,espaciadox+10,40,this);
+                graDibujo.drawImage(imaCora,espaciadox+20,40,this);
+                graDibujo.drawImage(imaCora,espaciadox+30,40,this);
+                graDibujo.drawImage(imaCora,espaciadox+40,40,this);        
+            break;            
+        }                      
+        
+        graDibujo.drawString("          Puntos: " + iPuntos , 40, 50);        
         if (bpausa)
         {
             graDibujo.setFont(new Font("Arial",Font.BOLD,40));
