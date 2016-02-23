@@ -35,6 +35,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
 
     private Base basPrincipal;                  // Objeto principal
     private LinkedList<Base> lklMalos;          //Linked list malos    
+    private LinkedList<Base> lklDisparos;       //linked list disparos
     private Image imaImagenFondo;               // para dibujar la imagen de fondo
     
     /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
@@ -53,28 +54,31 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     /* variable para el control de puntos */
     private int iPuntos;
     
-    private Vector vecPuntaje;    // Objeto vector para agregar el puntaje.
-    private String sNombreArchivo;    //Nombre del archivo.
-    private String[] arrArchivo;    //Arreglo del archivo divido.
+    private Vector vecPuntaje;         // Objeto vector para agregar el puntaje.
+    private String sNombreArchivo;     //Nombre del archivo.
+    private String[] arrArchivo;       //Arreglo del archivo divido.
     
-    //Guarde el numero de malos y buenos
+    //Guarde el numero de malos 
     private int iRandMalos;
+    private int iVeloMalos;             //velocidad de los malos
+    
+    private boolean bpausa = false;     //verificador estado de pausa. 
 
     public Juego3(){
         sNombreArchivo = "Puntaje.txt"; // Inicializamos con el nombre del arch
         vecPuntaje = new Vector();      // creamos el vector
         
-        // Inicializamos el contador con un random entre 3 y 5
-        iVidas = (int) (Math.random() * 3) + 3;
+        // Inicializamos el contador con 5 vidas
+        iVidas = 5;
         
         // Inicializamos el contador de las colisiones de los malos
         iContColisionMalo = 0;
-               
-        iPuntos = 0;    // Inicializamos los puntos en 0
+        iPuntos = 0;                    // Inicializamos los puntos en 0
                 
         addKeyListener(this);           // Añadir KeyListener       
         inicializoPrincipal();          // inicializo principal        
-        inicializoMalos();              // inicializo malos        
+        inicializoMalos();              // inicializo malos 
+        inicializodisparos();           // inicializo disparos
         inicializoSonidos();            // inicializo sonidos        
         inicializoImagenes();           // inicializo imagenes        
         Thread th = new Thread (this);  // Declaras un hilo        
@@ -137,7 +141,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     public void inicializoMalos() {
         /* creo la lista de los malos */
         lklMalos = new LinkedList<Base>();
-        
+        iVeloMalos = 3;
         /* genero el random de los malos entre 8 y 10 */
         iRandMalos = (int)(Math.random() * 3) + 8;
         int iRanMalos = iRandMalos;
@@ -159,6 +163,19 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             basMalo.setX((int)(Math.random() * (getWidth() - basMalo.getAncho())));
             basMalo.setY((int)(Math.random() * (getHeight() - basMalo.getAlto()))-500);
         }
+    }
+    
+    /** 
+     * inicializodisparos
+     * 
+     * Metodo que inicializa a todos los disparos
+     * 
+     */
+    public void inicializodisparos() {
+        /* creo la lista de los malos */
+        lklDisparos = new LinkedList<Base>();
+        
+       
     }
     
     /**
@@ -238,10 +255,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      */
     public void actualizaMalos() {
         for (Base basMalo : lklMalos){
-            /* genero el random de la velocidad del malo entre 3 y 5 */
-            int iRanVelocidad = (int) (Math.random() * 3) + 3;            
             // Se actualiza la posicion del bueno
-            basMalo.setY(basMalo.getY() + iRanVelocidad); 
+            basMalo.setY(basMalo.getY() + iVeloMalos); 
         }
     }
 
@@ -279,7 +294,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      */
     public void checaColisionMalos(){
         for (Base basMalo : lklMalos) {
-            // Checa si algun malo llego hasta el lado izquierdo
+            // Checa si algun malo llego hasta abajo
             if (basMalo.getY() >= 500 +basMalo.getAlto()) {
                 // Se reposiciona malo
                 basMalo.setX((int)(Math.random() * (getWidth() - 
@@ -306,7 +321,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         }
     }
     
-    
+
     /**
      * paint
      * 
@@ -412,6 +427,18 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             iDireccion = 1;
         } else if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT){
             iDireccion = 2;
+        } else if (keyEvent.getKeyCode() == KeyEvent.VK_P){
+            iDireccion = 0;
+            if (bpausa)
+            {
+               iVeloMalos = 3;
+               bpausa = false;
+            }
+            else
+            {   
+                iVeloMalos = 0;
+                bpausa = true;
+            }
         } 
          else if (keyEvent.getKeyCode() == KeyEvent.VK_G){
             
@@ -460,6 +487,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     public int getHeight(){
         return HEIGHT;
     }
+    
     /**
      * leerArchivo
      * 
@@ -499,8 +527,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             // Añado al malo a la lista
             lklMalos.add(basMalo);
             }
-        }
-              
+        }              
         fileIn.close();                
                
     }
