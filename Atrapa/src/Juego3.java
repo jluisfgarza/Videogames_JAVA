@@ -33,7 +33,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     private static final int HEIGHT = 600;      //Alto del JFrame
 
     private Base basPrincipal;                  // Objeto principal
-    private LinkedList<Base> lklMalos;          //Linked list malos    
+    private LinkedList<Base> lklMalos;          //Linked list malos
+    private LinkedList<Balas> lklBalas;         //lista encadenada para buenos
     private Image imaImagenFondo;               // para dibujar la imagen de fondo
     
     /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
@@ -154,6 +155,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     public void inicializoMalos() {
         /* creo la lista de los malos */
         lklMalos = new LinkedList<Base>();
+        lklBalas = new LinkedList<Balas>();
         iVeloMalos = 3;
         /* genero el random de los malos entre 8 y 10 */
         iRandMalos = (int)(Math.random() * 3) + 8;
@@ -239,6 +241,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 break;
         }        
         actualizaMalos(); // actualizamos buenos y malos
+        actualizaBalas(); //actualizamos balas
     }
     
     /** 
@@ -253,6 +256,21 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             basMalo.setY(basMalo.getY() + iVeloMalos); 
         }
     }
+    
+    /** 
+     * actualizaBalas
+     * 
+     * Metodo que actualiza la posicion de las balas 
+     * 
+     */
+    public void actualizaBalas() {
+        for (Balas balBalas : lklBalas){
+            // Se actualiza la posicion del bueno
+            balBalas.Avanza();
+        }
+    }
+    
+    
 
     /**
      * checaColision
@@ -394,7 +412,13 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         // Dibujo al malo
         for (Base basMalo : lklMalos){
             basMalo.paint(graDibujo, this);
-        }        
+        }
+        if (lklBalas != null){
+            for (Balas balBalas : lklBalas){
+                balBalas.paint(graDibujo, this);
+            }
+        }
+        
         // Dibujamos el texto con las vidas y el puntaje
         graDibujo.setColor(Color.white);
         graDibujo.fillRect(0,15,1000,40);
@@ -481,13 +505,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             jfrmJuego.setVisible(true);
                        
             
-        } else if (keyEvent.getKeyCode() == KeyEvent.VK_A){            
-           
-        } else if (keyEvent.getKeyCode() == KeyEvent.VK_S){            
-            
-        } else if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE){            
-            
-        }
+        } 
+       
          else if (keyEvent.getKeyCode() == KeyEvent.VK_G){
             
             // pide el nombre de usuario                
@@ -510,6 +529,40 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     public void keyReleased(KeyEvent keyEvent) {
         // Se cambia la dirección de Principal a 0 para que no se mueva
         iDireccion = 0;
+        if (keyEvent.getKeyCode() == KeyEvent.VK_A){ 
+            URL urlImagenBalas = this.getClass().getResource("ball.png");
+        
+        // Creo las balas
+            Balas balBalas = new Balas((basPrincipal.getX() + 
+                    basPrincipal.getAncho()/2), basPrincipal.getY(), 
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 'a',3);
+            // Añado al malo a la lista
+            lklBalas.add(balBalas);
+            
+           
+        } 
+        if (keyEvent.getKeyCode() == KeyEvent.VK_S){   
+             URL urlImagenBalas = this.getClass().getResource("ball.png");
+        
+        // Creo las balas
+            Balas balBalas = new Balas((basPrincipal.getX() + 
+                    basPrincipal.getAncho()/2), basPrincipal.getY() , 
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 's',3);
+            // Añado al malo a la lista
+            lklBalas.add(balBalas);
+            
+        } 
+        else if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE){  
+             URL urlImagenBalas = this.getClass().getResource("ball.png");
+        
+        // Creo las balas
+            Balas balBalas = new Balas((basPrincipal.getX() + 
+                    basPrincipal.getAncho()/2), basPrincipal.getY(), 
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), ' ',3);
+            // Añado al malo a la lista
+            lklBalas.add(balBalas);
+            
+        }
     }
     
     /**
@@ -570,7 +623,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             URL urlImagenMalos = this.getClass().getResource("piedra.gif");
             for(int iI = 0; iI < iRandMalos; iI++){
             // Creo a un malo
-            Base basMalo = new Base (Integer.parseInt(fileIn.readLine()), Integer.parseInt(fileIn.readLine()), 
+            Base basMalo = new Base (Integer.parseInt(fileIn.readLine()), 
+                    Integer.parseInt(fileIn.readLine()), 
                 Toolkit.getDefaultToolkit().getImage(urlImagenMalos));
             // Añado al malo a la lista
             lklMalos.add(basMalo);
