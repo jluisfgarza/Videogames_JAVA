@@ -1,6 +1,6 @@
 /*
-Autores:
-Version:
+Autores: Juan Luis Flores    Carlos Serret
+Version: beta 4
 Fecha:
 */
 
