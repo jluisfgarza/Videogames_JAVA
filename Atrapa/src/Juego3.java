@@ -36,22 +36,14 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     
     // Declaran objetos del juego
     private Base basPrincipal;                  // Objeto principal
-<<<<<<< HEAD
     private LinkedList<Base> lklMalos;          //Linked list malos  
     private LinkedList<Balas> lklBalas;         //lista encadenada para buenos
     private Image imaImagenFondo;               // para dibujar la imagen de fondo
-=======
-    private LinkedList<Base> lklMalos;          //Linked list malos       
-    
->>>>>>> origin/master
+
     /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
     private Image    imaImagenApplet;           // Imagen a proyectar en Applet	
     private Graphics graGraficaApplet;          // Objeto grafico de la Imagen
     private AudioClip sonidoPain;               // Sonido de colision con malos    
-<<<<<<< HEAD
-=======
-    private Image imaImagenFondo;               // para dibujar la imagen de fondo
->>>>>>> origin/master
     
     // variables para controlar movimiento al principal
     private int iDireccion;                 // Direccion de principal
@@ -155,8 +147,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         lklBalas = new LinkedList<Balas>();
         iVeloMalos = 3;
         
-        /* genero el random de los malos entre 8 y 10 */
-        iRandMalos = (int)(Math.random() * 3) + 8;
+        /* genero el random de los malos entre 10 y 15 */
+        iRandMalos = (int)(Math.random() * 6) + 10;
         int iRanMalos = iRandMalos;
         
         // Defino la de los malos.
