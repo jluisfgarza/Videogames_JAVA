@@ -64,6 +64,10 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     private int iRandMalos;
     private int iVeloMalos;             //velocidad de los malos
     
+    //variables para disparar
+    boolean listodispara;               //revisa si puede disparar
+    boolean dispara = false;                    //estao del disparo
+    
     private boolean bpausa = false;     //verificador estado de pausa. 
 
     public Juego3(){
@@ -425,17 +429,14 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 graDibujo.drawImage(imaCora,espaciadox+30,40,this);
                 graDibujo.drawImage(imaCora,espaciadox+40,40,this);        
             break;            
-        }                      
-        
+        }                             
         graDibujo.drawString("          Puntos: " + iPuntos , 40, 50);        
         if (bpausa)
         {
             graDibujo.setFont(new Font("Arial",Font.BOLD,40));
             graDibujo.setColor(Color.white);
             graDibujo.drawString("PAUSADO" , getWidth()/2-60, getHeight()/2);
-        }
-                
-
+        }                
     }
 
     @Override
@@ -464,6 +465,21 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 bpausa = true;
             }
         } else if (keyEvent.getKeyCode() == KeyEvent.VK_R){            
+            iVidas = 5;
+            iDireccion = 0;
+             // Posiciono a los malos
+            for (Base basMalo : lklMalos){
+                basMalo.setX((int)(Math.random() * (getWidth() - basMalo.getAncho())));
+                basMalo.setY((int)(Math.random() * (getHeight() - basMalo.getAlto()))-500);
+            }
+            iVeloMalos = 3;
+            dispose();
+            // Create new jframe
+            Juego3 jfrmJuego = new Juego3();
+            jfrmJuego.setSize(WIDTH,HEIGHT);
+            jfrmJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jfrmJuego.setVisible(true);
+                       
             
         } else if (keyEvent.getKeyCode() == KeyEvent.VK_A){            
            
