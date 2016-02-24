@@ -374,7 +374,10 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             }
         } else if (iVidas ==0) {
             // dibujo la imagen de fin de juego
-            graDibujo.drawImage(imaGameOver, 0, 0, getWidth(), getHeight(), this);          
+            graDibujo.setFont(new Font("Arial",Font.BOLD,24));
+            graDibujo.setColor(Color.red);
+            graDibujo.drawImage(imaGameOver, 0, 0, getWidth(), getHeight(), this); 
+            graDibujo.drawString("Pulsa R para reiniciar el juego...", getWidth()/2-100, getHeight()/2+100);
         } 
     }
     
