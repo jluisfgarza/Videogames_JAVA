@@ -1,7 +1,9 @@
 /*
-Autores: Juan Luis Flores    Carlos Serret
-Version: beta 4
-Fecha:
+Autores: 
+    Juan Luis Flores    
+    Carlos Serret
+Version: Beta 4
+Fecha:  24/2/2016
 */
 
 //Librerias
@@ -28,57 +30,46 @@ import javax.swing.JFrame;
 
 
 public class Juego3 extends JFrame implements Runnable, KeyListener {
-    /* Defino tamaño del applet */
+    // Defino tamaño del applet
     private static final int WIDTH = 1000;      //Ancho del JFrame
     private static final int HEIGHT = 600;      //Alto del JFrame
-
+    
+    // Declaran objetos del juego
     private Base basPrincipal;                  // Objeto principal
-    private LinkedList<Base> lklMalos;          //Linked list malos    
-    private Image imaImagenFondo;               // para dibujar la imagen de fondo
+    private LinkedList<Base> lklMalos;          //Linked list malos       
     
     /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
-    private Image    imaImagenApplet;       // Imagen a proyectar en Applet	
-    private Graphics graGraficaApplet;      // Objeto grafico de la Imagen
-    private AudioClip sonidoPain;           // Sonido de colision con malos    
+    private Image    imaImagenApplet;           // Imagen a proyectar en Applet	
+    private Graphics graGraficaApplet;          // Objeto grafico de la Imagen
+    private AudioClip sonidoPain;               // Sonido de colision con malos    
+    private Image imaImagenFondo;               // para dibujar la imagen de fondo
     
-    /* variables para controlar movimiento */
+    // variables para controlar movimiento al principal
     private int iDireccion;                 // Direccion de principal
     
-    /* variable e imagen para el control de vidas */
-    private int iVidas;
-    private int iContColisionMalo;
-    private Image imaGameOver;
-    
-    //dibujar corazoners
-    private Image imaCora;
-    private int espaciadox;
-    
-    /* variable para el control de puntos */
-    private int iPuntos;
-    
-    private Vector vecPuntaje;         // Objeto vector para agregar el puntaje.
-    private String sNombreArchivo;     //Nombre del archivo.
-    private String[] arrArchivo;       //Arreglo del archivo divido.
+    // variable e imagen para el control de vidas  y score
+    private int iVidas;                         // vidas el objeto principal
+    // contador de colision del objeto principal con cada 5 asteroides
+    private int iContColisionMalo;              
+    private Image imaGameOver;            // imagen de game over      
+    private Image imaCora;                // Imagen del corazon            
+    private int iPuntos;                  // variable para el control de puntos
+        
+    // Variable para guardar el nombre del archivo
+    private String sNombreArchivo;        //Nombre del archivo.    
     
     //Guarde el numero de malos 
-    private int iRandMalos;
-    private int iVeloMalos;             //velocidad de los malos
+    private int iRandMalos;               // Guarda la cantidad de malos creados
+    private int iVeloMalos;               // Velocidad de los malos
     
-    //variables para disparar
-    boolean listodispara;               //revisa si puede disparar
-    boolean dispara = false;                    //estao del disparo
-    
-    private boolean bpausa = false;     //verificador estado de pausa. 
+    // Variable para verificar el estado del juego
+    private boolean bpausa = false;       //verificador estado de pausa. 
 
     public Juego3(){
         sNombreArchivo = "Puntaje.txt"; // Inicializamos con el nombre del arch
-        vecPuntaje = new Vector();      // creamos el vector
-        
-        // Inicializamos el contador con 5 vidas
-        iVidas = 5;
-        
+        iVidas = 5;                     // Inicializamos el contador con 5 vidas1                
         // Inicializamos el contador de las colisiones de los malos
-        iContColisionMalo = 0;
+        iContColisionMalo = 0;          
         iPuntos = 0;                    // Inicializamos los puntos en 0
                 
         addKeyListener(this);           // Añadir KeyListener       
@@ -107,9 +98,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         
         // Creo la imagen de vidas
         URL urlImagenCora = this.getClass().getResource("Heart.png");
-        imaCora = Toolkit.getDefaultToolkit().getImage(urlImagenCora);
-        espaciadox = 20;
-    
+        imaCora = Toolkit.getDefaultToolkit().getImage(urlImagenCora);            
     }    
     
     
@@ -120,7 +109,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      * 
      */
     public void inicializoSonidos() {        
-        // Creo el sonido de vida menos
+        // Creo el sonido de pierde vida
         URL eaURL2 = Juego3.class.getResource("Explosion.wav");
         sonidoPain = Applet.newAudioClip(eaURL2);
     }
@@ -155,6 +144,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         /* creo la lista de los malos */
         lklMalos = new LinkedList<Base>();
         iVeloMalos = 3;
+        
         /* genero el random de los malos entre 8 y 10 */
         iRandMalos = (int)(Math.random() * 3) + 8;
         int iRanMalos = iRandMalos;
@@ -171,14 +161,14 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             lklMalos.add(basMalo);
         }
         
-        // Posiciono a los malos
+        // Posiciono a cada uno de los malos
         for (Base basMalo : lklMalos){
-            basMalo.setX((int)(Math.random() * (getWidth() - basMalo.getAncho())));
-            basMalo.setY((int)(Math.random() * (getHeight() - basMalo.getAlto()))-500);
+            basMalo.setX((int)(Math.random() * 
+                    (getWidth() - basMalo.getAncho())));
+            basMalo.setY((int)(Math.random() * 
+                    (getHeight() - basMalo.getAlto()))-500);
         }
-    }
-    
- 
+    }    
     
     /**
      * @param args the command line arguments
@@ -205,8 +195,10 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
            movimientos y se vuelve a pintar todo
         */ 
         while (iVidas > 0) {
-            actualiza();
-            checaColision();
+            if (!bpausa){                
+                actualiza();
+                checaColision();
+            }
             repaint();
             try	{
                 // El hilo del juego se duerme.
@@ -226,14 +218,14 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      * 
      */
     public void actualiza(){
-
+        
         // Mueve a principal dependiendo de la dirección
         switch (iDireccion) {
-            case 1:
-                basPrincipal.setX(basPrincipal.getX() - 6);
+            case 1:                
+                basPrincipal.setX(basPrincipal.getX() - 6); //Mueve a la izq
                 break;
             case 2:
-                basPrincipal.setX(basPrincipal.getX() + 6);
+                basPrincipal.setX(basPrincipal.getX() + 6); //Mueve a la der
                 break;            
             default:
                 break;
@@ -268,12 +260,6 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         } 
         if (basPrincipal.getX() + basPrincipal.getAncho() >= getWidth() ) {
             basPrincipal.setX(getWidth() - basPrincipal.getAncho());
-        }
-        if (basPrincipal.getY() <= 0){
-            basPrincipal.setY(0);
-        }
-        if (basPrincipal.getY() + basPrincipal.getAlto() >= getHeight()){
-            basPrincipal.setY(getHeight() - basPrincipal.getAlto());
         }
         
         // Llamamos a la funcion para checar las colisiones de los malos
@@ -338,8 +324,10 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
 
         // Actualiza la imagen de fondo.
         URL urlImagenFondo = this.getClass().getResource("fondo.png");
-        Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
-        graGraficaApplet.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);
+        Image imaImagenFondo = Toolkit.getDefaultToolkit()
+                .getImage(urlImagenFondo);
+        graGraficaApplet.drawImage(imaImagenFondo, 0, 0, 
+                getWidth(), getHeight(), this);
 
         // Actualiza el Foreground.
         graGraficaApplet.setColor (getForeground());
@@ -376,8 +364,11 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             // dibujo la imagen de fin de juego
             graDibujo.setFont(new Font("Arial",Font.BOLD,24));
             graDibujo.setColor(Color.red);
-            graDibujo.drawImage(imaGameOver, 0, 0, getWidth(), getHeight(), this); 
-            graDibujo.drawString("Pulsa R para reiniciar el juego...", getWidth()/2-100, getHeight()/2+100);
+            graDibujo.drawImage(imaGameOver, 0, 0, 
+                    getWidth(), getHeight(), this); 
+            // Aviso al usuario para pulsar reiniciar 
+            graDibujo.drawString("Pulsa R para reiniciar el juego...", 
+                    getWidth()/2-100, getHeight()/2+100);
         } 
     }
     
@@ -405,40 +396,42 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         graDibujo.setFont(new Font("Arial",Font.BOLD,14));
         graDibujo.setColor(Color.black);
         
+        //Dibuja las vidas de acuerdo a la cantidad que queden
         switch (iVidas)
         {
             case 1:
-                graDibujo.drawImage(imaCora,espaciadox,40,this);                    
+                graDibujo.drawImage(imaCora,20,40,this);                    
             break;
             case 2:
-                graDibujo.drawImage(imaCora,espaciadox,40,this);    
-                graDibujo.drawImage(imaCora,espaciadox+10,40,this);                
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);                
             break;
             case 3:
-                graDibujo.drawImage(imaCora,espaciadox,40,this);    
-                graDibujo.drawImage(imaCora,espaciadox+10,40,this);
-                graDibujo.drawImage(imaCora,espaciadox+20,40,this);                
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);
+                graDibujo.drawImage(imaCora,40,40,this);                
             break;
             case 4:
-                graDibujo.drawImage(imaCora,espaciadox,40,this);    
-                graDibujo.drawImage(imaCora,espaciadox+10,40,this);
-                graDibujo.drawImage(imaCora,espaciadox+20,40,this);
-                graDibujo.drawImage(imaCora,espaciadox+30,40,this);                
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);
+                graDibujo.drawImage(imaCora,40,40,this);
+                graDibujo.drawImage(imaCora,50,40,this);                
             break;            
             case 5:
-                graDibujo.drawImage(imaCora,espaciadox,40,this);    
-                graDibujo.drawImage(imaCora,espaciadox+10,40,this);
-                graDibujo.drawImage(imaCora,espaciadox+20,40,this);
-                graDibujo.drawImage(imaCora,espaciadox+30,40,this);
-                graDibujo.drawImage(imaCora,espaciadox+40,40,this);        
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);
+                graDibujo.drawImage(imaCora,40,40,this);
+                graDibujo.drawImage(imaCora,50,40,this);
+                graDibujo.drawImage(imaCora,60,40,this);        
             break;            
-        }                             
+        }
+        //Despliega el score
         graDibujo.drawString("          Puntos: " + iPuntos , 40, 50);        
         if (bpausa)
         {
             graDibujo.setFont(new Font("Arial",Font.BOLD,40));
             graDibujo.setColor(Color.white);
-            graDibujo.drawString("PAUSADO" , getWidth()/2-60, getHeight()/2);
+            graDibujo.drawString("PAUSADO" , getWidth()/2-100, getHeight()/2);
         }                
     }
 
@@ -452,30 +445,22 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         /* Dependiendo de si el usuario da click en la flecha izq o derecha se 
         le asigna una direccion a Principal */
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
-            iDireccion = 1;
+            iDireccion = 1;         //Mover a la izq
         } else if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT){
-            iDireccion = 2;
+            iDireccion = 2;         //Mover a la der
         } else if (keyEvent.getKeyCode() == KeyEvent.VK_P){
-            iDireccion = 0;
+            iDireccion = 0;         // Pausar el juego
             if (bpausa)
             {
-               iVeloMalos = 3;
-               bpausa = false;
+               bpausa = false;              // Actualizar el estado de pausa
             }
             else
-            {   
-                iVeloMalos = 0;
-                bpausa = true;
+            {  
+                bpausa = true;               // Actualizar el estado de pausa
             }
-        } else if (keyEvent.getKeyCode() == KeyEvent.VK_R){            
-            iVidas = 5;
-            iDireccion = 0;
-             // Posiciono a los malos
-            for (Base basMalo : lklMalos){
-                basMalo.setX((int)(Math.random() * (getWidth() - basMalo.getAncho())));
-                basMalo.setY((int)(Math.random() * (getHeight() - basMalo.getAlto()))-500);
-            }
-            iVeloMalos = 3;
+        } 
+        //Reinicia el Juego
+        else if (keyEvent.getKeyCode() == KeyEvent.VK_R){                        
             dispose();
             // Create new jframe
             Juego3 jfrmJuego = new Juego3();
@@ -491,6 +476,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         } else if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE){            
             
         }
+        //Guarda el Juego
          else if (keyEvent.getKeyCode() == KeyEvent.VK_G){
             
             // pide el nombre de usuario                
@@ -500,6 +486,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             catch(IOException e) {
             }
          }
+         //Carga el Juego
          else if (keyEvent.getKeyCode() == KeyEvent.VK_C){
              try {
                 leeArchivo();    //lee el contenido del archivo             
@@ -573,7 +560,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             URL urlImagenMalos = this.getClass().getResource("piedra.gif");
             for(int iI = 0; iI < iRandMalos; iI++){
             // Creo a un malo
-            Base basMalo = new Base (Integer.parseInt(fileIn.readLine()), Integer.parseInt(fileIn.readLine()), 
+            Base basMalo = new Base (Integer.parseInt(fileIn.readLine()), 
+                    Integer.parseInt(fileIn.readLine()), 
                 Toolkit.getDefaultToolkit().getImage(urlImagenMalos));
             // Añado al malo a la lista
             lklMalos.add(basMalo);

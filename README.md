@@ -15,7 +15,7 @@ Ahora deberás de atacar a los objetos que caen con disparos, cada vez que oprim
 - [x] Cada vida que se pierda los obstáculos avanzan más rápido.
 - [ ] Cada obstaculo que haya sido destruido se acumulan 10 puntos.
 - [x] Desplegar puntos con numeros y vidas con imágenes.
-- [ ] Una vez que se termine el juego, puedes inicializarlo de nuevo con alguna tecla, o con el mouse, o como se te ocurra, pero debes decirle al usuario al pintar el dibujo GameOver.
+- [x] Una vez que se termine el juego, puedes inicializarlo de nuevo con alguna tecla, o con el mouse, o como se te ocurra, pero debes decirle al usuario al pintar el dibujo GameOver.
 
 Criterio
 - 10 Creación Principal, Obstáculos, Balas
