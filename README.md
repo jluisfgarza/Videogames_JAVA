@@ -1,6 +1,9 @@
 # Videogames_JAVA   
 #### Proyecto: CONTRA ATACA
 
+
+![Image of Game](https://dl.dropboxusercontent.com/u/39165599/Github%20Projects/Juego.png)
+
 Utilicen la tarea de Applet que usaron para combatir a objetos que entraban por arriba del applet, pero ahora tu personaje principal debe estar al fondo del JFrame, y se moverá con las flechas <-    ->   solamente, cuando se opriman las flechas, el personaje no se saldrá del JFrame.
 
 Ahora deberás de atacar a los objetos que caen con disparos, cada vez que oprimas un espacio se generá un disparo nuevo y este debe de seguir avanzando hasta que destruya el obstaculo en cuyo caso se desaparecen ambos objetos, o choque con la orilla superior del JFrame en cuyo caso debe desaparecer el disparo.
