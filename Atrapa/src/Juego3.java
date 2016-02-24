@@ -36,13 +36,22 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     
     // Declaran objetos del juego
     private Base basPrincipal;                  // Objeto principal
+<<<<<<< HEAD
     private LinkedList<Base> lklMalos;          //Linked list malos  
     private LinkedList<Balas> lklBalas;         //lista encadenada para buenos
     private Image imaImagenFondo;               // para dibujar la imagen de fondo
+=======
+    private LinkedList<Base> lklMalos;          //Linked list malos       
+    
+>>>>>>> origin/master
     /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
     private Image    imaImagenApplet;           // Imagen a proyectar en Applet	
     private Graphics graGraficaApplet;          // Objeto grafico de la Imagen
     private AudioClip sonidoPain;               // Sonido de colision con malos    
+<<<<<<< HEAD
+=======
+    private Image imaImagenFondo;               // para dibujar la imagen de fondo
+>>>>>>> origin/master
     
     // variables para controlar movimiento al principal
     private int iDireccion;                 // Direccion de principal
@@ -491,6 +500,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             jfrmJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             jfrmJuego.setVisible(true);
         }
+        //Guarda el Juego
          else if (keyEvent.getKeyCode() == KeyEvent.VK_G){
             
             // pide el nombre de usuario                
