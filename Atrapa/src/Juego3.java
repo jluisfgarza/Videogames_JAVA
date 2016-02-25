@@ -156,10 +156,18 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     URL urlImagenMalos = this.getClass().getResource("piedra.gif");
         
         // Creo a los malos
-        for(int iI = 0; iI < iRanMalos; iI++){
+        for(int iI = 0; iI < iRandMalos - iCantMuyMalos; iI++){
             // Creo a un malo
             Malos malMalo = new Malos (0, 0, 
-                Toolkit.getDefaultToolkit().getImage(urlImagenMalos), false, 2);
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos), 0, 2);
+            // Añado al malo a la lista
+            lklMalos.add(malMalo);
+        }
+        // Creo a los malos inteligentes
+        for(int iI = 0; iI < iCantMuyMalos; iI++){
+            // Creo a un malo
+            Malos malMalo = new Malos (0, 0, 
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos), 1, 2);
             // Añado al malo a la lista
             lklMalos.add(malMalo);
         }
@@ -652,7 +660,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             // Creo a un malo
             Malos malMalo = new Malos (Integer.parseInt(fileIn.readLine()), 
                     Integer.parseInt(fileIn.readLine()), 
-                Toolkit.getDefaultToolkit().getImage(urlImagenMalos), false, 2);
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos),
+                    Integer.parseInt(fileIn.readLine()), 2);
             // Añado al malo a la lista
             lklMalos.add(malMalo);
             }
@@ -693,6 +702,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             Malos malMalo = (Malos) lklMalos.get(iJ);
             fpw.println(malMalo.getX());
             fpw.println(malMalo.getY());
+            fpw.println(malMalo.getInteli());
         }
         fpw.println(lklBalas.size());
         for (int iJ = 0; iJ < lklBalas.size();iJ++){

@@ -16,7 +16,7 @@ Ahora deberás de atacar a los objetos que caen con disparos, cada vez que oprim
 - [x] Al pausar el juego debe aparecer una imagen de pausa.
 - [x] El juego inicia con 5 vidas, cada vez que se colisione al personaje principal se perdera 1 punto, y por cada 5 colisiones se pierde una vida.
 - [x] Cada vida que se pierda los obstáculos avanzan más rápido.
-- [ ] Cada obstaculo que haya sido destruido se acumulan 10 puntos.
+- [x] Cada obstaculo que haya sido destruido se acumulan 10 puntos.
 - [x] Desplegar puntos con numeros y vidas con imágenes.
 - [x] Una vez que se termine el juego, puedes inicializarlo de nuevo con alguna tecla, o con el mouse, o como se te ocurra, pero debes decirle al usuario al pintar el dibujo GameOver.
 
@@ -34,4 +34,4 @@ Criterio
 Plus:
 - [x] De 10 a 15 malos
 - [ ] El 10% te sigue
-- [ ] Crear clase Malos.
+- [x] Crear clase Malos.

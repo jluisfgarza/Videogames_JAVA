@@ -12,13 +12,13 @@ public class Malos extends Base{
     
     
     
-    private boolean bHiperM; //creamos variable para revisar nivel de maldad
+    private int Inteli; //creamos variable para revisar nivel de maldad
     //velocidades de lo malos
     private int iVel;  
 
-    public Malos(int iX, int iY, Image imaImagen, boolean bHiperM, int iVel) {
+    public Malos(int iX, int iY, Image imaImagen, int Inteli, int iVel) {
         super(iX, iY, imaImagen);
-        this.bHiperM = bHiperM;
+        this.Inteli = Inteli;
         this.iVel = iVel;
         
     }
@@ -26,75 +26,41 @@ public class Malos extends Base{
     public void MalosCaen(int iVidas, Base basPrincipal){
         
         switch (iVidas){
-            case 5: iVel = -2;
+            case 5: iVel = 2;
                 break;
-            case 4: iVel = -3;
+            case 4: iVel = 3;
                 break;
-            case 3: iVel = -4;
+            case 3: iVel = 4;
                 break;
-            case 2: iVel = -5;
+            case 2: iVel = 5;
                 break;
-            case 1: iVel = -6;
+            case 1: iVel = 6;
                 break;
         }
         
-        if (!this.bHiperM){
-            this.setY(this.getY()- iVel);
+        if (Inteli == 0){
+            this.setY(this.getY() + iVel);
         }
         else{
             if (basPrincipal.getX() > this.getX()){
                 this.setX(this.getX() + iVel);        
             }
             if (basPrincipal.getX() < this.getX()){
-                this.setX(this.getX() + iVel);
-            }
-            if (basPrincipal.getY() > this.getY()){ 
-                this.setY(this.getY() + iVel);
-            } 
-            if (basPrincipal.getY() < this.getY()){
-                this.setY(this.getY() + iVel);
-            }
+                this.setX(this.getX() - iVel);
+            }            
+            this.setY(this.getY() + iVel);             
         }
         
     }
     
     /**
-     * setVel
+     * getInteli
      * 
      * Metodo modificador usado para cambiar la velocidad
      * 
      */
-    public void setVelX(){
-        
+    public int getInteli(){        
+            return Inteli;
     }
-    
-    /**
-     * setVel
-     * 
-     * Metodo de acceso usado para obtener la velocidad
-     * 
-     */
-    public void getVelX(){
-        
-    }
-    /**
-     * setVelY
-     * 
-     * Metodo modificador usado para cambiar la velocidad
-     * 
-     */
-    public void setVelY(){
-        
-    }
-    /**
-     * getVelY
-     * 
-     * Metodo de acceso usado para cambiar la velocidad
-     * 
-     */
-    public void getVelY(){
-        
-    }
-    
     
 }
