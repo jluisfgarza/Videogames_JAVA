@@ -61,7 +61,6 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     
     //Guarde el numero de malos 
     private int iRandMalos;               // Guarda la cantidad de malos creados
-    private int iVeloMalos;               // Velocidad de los malos
     private int iCantBalas;               // Guarda la cantidad de balas ya disparadas
     private int iCantMuyMalos;            // cantidad de malos inteligentes
     
@@ -147,7 +146,6 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         /* creo la lista de los malos */
         lklMalos = new LinkedList<Malos>();
         lklBalas = new LinkedList<Balas>();
-        iVeloMalos = 3;
         
         /* genero el random de los malos entre 10 y 15 */
         iRandMalos = (int)(Math.random() * 6) + 10;
@@ -322,7 +320,6 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 // Checamos si ya van 5 colisiones
                 if (iContColisionMalo == 5) {
                     iVidas--; // Quitamos una vida
-                    iVeloMalos += 2; // aumenta la velocidad de los malos
                     iContColisionMalo = 0; // Se pone el contador  en 0                    
                     sonidoPain.play();// Suena efecto cuando se pierde una vida
                 }   
