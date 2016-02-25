@@ -33,5 +33,5 @@ Criterio
 
 Plus:
 - [x] De 10 a 15 malos
-- [ ] El 10% te sigue
+- [x] El 10% te sigue
 - [x] Crear clase Malos.
