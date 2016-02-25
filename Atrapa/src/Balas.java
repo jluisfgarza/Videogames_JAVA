@@ -7,14 +7,11 @@ import java.awt.Image;
  * and open the template in the editor.
  */
 
-/**
- *
- * @author Carlos
- */
+
 public class Balas extends Base{
 
     
-    private char cTipo;                 //creamos variable para leer dirección
+    private int cTipo;                 //creamos variable para leer dirección
     private int iVel;                   //variable para velocidad de cada bala
     
     
@@ -32,7 +29,7 @@ public class Balas extends Base{
      * @param cTipo es la <code>direccion</code> de la bala
      * @param iVel es la <code>velocidad</code> del objeto
      */
-    public Balas(int iX, int iY, Image imaImagen, char cTipo, int iVel) {
+    public Balas(int iX, int iY, Image imaImagen, int cTipo, int iVel) {
         super(iX, iY, imaImagen);
         this.cTipo = cTipo;
         this.iVel = iVel;
@@ -40,14 +37,14 @@ public class Balas extends Base{
     }
     
     public void Avanza(){
-        if (this.cTipo == ' '){
+        if (this.cTipo == 2){
             this.setY(this.getY() - this.iVel);
         }
-        if (this.cTipo == 's'){
+        if (this.cTipo == 3){
             this.setY(this.getY() - this.iVel);
             this.setX(this.getX() + this.iVel);
         }
-        if (this.cTipo == 'a'){
+        if (this.cTipo == 1){
             this.setY(this.getY() - this.iVel);
             this.setX(this.getX() - this.iVel);
             
@@ -55,7 +52,24 @@ public class Balas extends Base{
         
     }
     
+    /**
+     * gettipo
+     * 
+     * regresa el tipo de bala
+     * 
+     */
+    public int getTipo() {
+        return cTipo;
+    }
     
-    
+    /**
+     * get Velocidad
+     * 
+     * regresa el tipo de bala
+     * 
+     */
+    public int getVel() {
+        return iVel;
+    }
     
 }

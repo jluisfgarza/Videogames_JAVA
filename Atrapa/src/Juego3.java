@@ -36,12 +36,12 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     
     // Declaran objetos del juego
     private Base basPrincipal;                  // Objeto principal
-    private LinkedList<Base> lklMalos;          //Linked list malos  
+    private LinkedList<Malos> lklMalos;          //Linked list malos  
     private LinkedList<Balas> lklBalas;         //lista encadenada para buenos
     private Image imaImagenFondo;               // para dibujar la imagen de fondo
 
     /* objetos para manejar el buffer del Applet y que la imagen no parpadee */
-    private Image    imaImagenApplet;           // Imagen a proyectar en Applet	
+    private Image    imaImagenApplet;           // Imagen a proyectar en Applet 
     private Graphics graGraficaApplet;          // Objeto grafico de la Imagen
     private AudioClip sonidoPain;               // Sonido de colision con malos    
     
@@ -62,6 +62,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     //Guarde el numero de malos 
     private int iRandMalos;               // Guarda la cantidad de malos creados
     private int iVeloMalos;               // Velocidad de los malos
+    private int iCantBalas;               // Guarda la cantidad de balas ya disparadas
+    private int iCantMuyMalos;            // cantidad de malos inteligentes
     
     // Variable para verificar el estado del juego
     private boolean bpausa = false;       //verificador estado de pausa. 
@@ -126,7 +128,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         URL urlImagenPrincipal = this.getClass().getResource("earth.gif");
         
         // Creo el objeto principal 
-	basPrincipal = new Base(0, 0, 
+    basPrincipal = new Base(0, 0, 
                 Toolkit.getDefaultToolkit().getImage(urlImagenPrincipal));
 
         // Posiciono al objeto principal
@@ -143,32 +145,34 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      */
     public void inicializoMalos() {
         /* creo la lista de los malos */
-        lklMalos = new LinkedList<Base>();
+        lklMalos = new LinkedList<Malos>();
         lklBalas = new LinkedList<Balas>();
         iVeloMalos = 3;
         
         /* genero el random de los malos entre 10 y 15 */
         iRandMalos = (int)(Math.random() * 6) + 10;
+        iCantMuyMalos = (int) Math.ceil(iRandMalos*.1);
         int iRanMalos = iRandMalos;
         
         // Defino la de los malos.
-	URL urlImagenMalos = this.getClass().getResource("piedra.gif");
+    URL urlImagenMalos = this.getClass().getResource("piedra.gif");
         
         // Creo a los malos
         for(int iI = 0; iI < iRanMalos; iI++){
             // Creo a un malo
-            Base basMalo = new Base (0, 0, 
-                Toolkit.getDefaultToolkit().getImage(urlImagenMalos));
+            Malos malMalo = new Malos (0, 0, 
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos), false, 2);
             // Añado al malo a la lista
-            lklMalos.add(basMalo);
+            lklMalos.add(malMalo);
         }
         
         // Posiciono a cada uno de los malos
-        for (Base basMalo : lklMalos){
-            basMalo.setX((int)(Math.random() * 
-                    (getWidth() - basMalo.getAncho())));
-            basMalo.setY((int)(Math.random() * 
-                    (getHeight() - basMalo.getAlto()))-500);
+        for (int iJ = 0; iJ < lklMalos.size();iJ++){
+            Malos malMalo = (Malos) lklMalos.get(iJ);
+            malMalo.setX((int)(Math.random() * 
+                    (getWidth() - malMalo.getAncho())));
+            malMalo.setY((int)(Math.random() * 
+                    (getHeight() - malMalo.getAlto()))-500);
         }
     }    
     
@@ -202,7 +206,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 checaColision();
             }
             repaint();
-            try	{
+            try {
                 // El hilo del juego se duerme.
                 Thread.sleep (40);
             }
@@ -210,7 +214,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 System.out.println("Hubo un error en el juego " + 
                         iexError.toString());
             }
-	}              
+    }              
     }
     
     /** 
@@ -243,10 +247,13 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      * 
      */
     public void actualizaMalos() {
-        for (Base basMalo : lklMalos){
-            // Se actualiza la posicion del bueno
-            basMalo.setY(basMalo.getY() + iVeloMalos); 
+        
+        for (int iJ  = 0; iJ < lklMalos.size() ; iJ++){
+            Malos malMalos = (Malos) lklMalos.get(iJ);
+            malMalos.MalosCaen(iVidas, basPrincipal);
         }
+        
+        
     }
     
     /** 
@@ -256,8 +263,9 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      * 
      */
     public void actualizaBalas() {
-        for (Balas balBalas : lklBalas){
-            // Se actualiza la posicion del bueno
+        //Actualizamos posicion de las balas
+        for (int iJ  = 0; iJ < lklBalas.size() ; iJ++){
+            Balas balBalas = (Balas) lklBalas.get(iJ);
             balBalas.Avanza();
         }
     }
@@ -282,6 +290,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         
         // Llamamos a la funcion para checar las colisiones de los malos
         checaColisionMalos();
+        checaColisionBalas();
+        
     }
     
     /**
@@ -291,24 +301,23 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
      * 
      */
     public void checaColisionMalos(){
-        for (Base basMalo : lklMalos) {
-            // Checa si algun malo llego hasta abajo
-            if (basMalo.getY() >= 500 +basMalo.getAlto()) {
+        for (int iJ = 0 ; iJ < lklMalos.size(); iJ++){
+            Malos malMalo = (Malos)lklMalos.get(iJ);
+            if (malMalo.getY() >= 500 +malMalo.getAlto()) {
                 // Se reposiciona malo
-                basMalo.setX((int)(Math.random() * (getWidth() - 
-                        basMalo.getAncho())));
-                basMalo.setY(basMalo.getY()-600);
+                malMalo.setX((int)(Math.random() * (getWidth() - 
+                        malMalo.getAncho())));
+                malMalo.setY(malMalo.getY()-600);
             }
-
-            // Checar si malo colisiona con el principal
-            if (basPrincipal.colisiona(basMalo)){
+            
+            if (basPrincipal.colisiona(malMalo)){
                 iContColisionMalo++; // Sumar una colision al contador
                 //Actualiza el score -1
                 iPuntos --;
                 // Se reposiciona el malo
-                basMalo.setX((int)(Math.random() * (getWidth() -
-                        basMalo.getAncho())));
-                basMalo.setY(basMalo.getY()-600);
+                malMalo.setX((int)(Math.random() * (getWidth() -
+                        malMalo.getAncho())));
+                malMalo.setY(malMalo.getY()-600);
                 
                 // Checamos si ya van 5 colisiones
                 if (iContColisionMalo == 5) {
@@ -316,8 +325,39 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                     iVeloMalos += 2; // aumenta la velocidad de los malos
                     iContColisionMalo = 0; // Se pone el contador  en 0                    
                     sonidoPain.play();// Suena efecto cuando se pierde una vida
+                }   
+            }
+            
+        }
+    }
+
+    /**
+     * checaColisionBalas
+     * 
+     * Metodo usado para checar la colision de las balas
+     * 
+     */
+    public void checaColisionBalas(){
+
+        for (int iI= 0; iI < lklMalos.size() ; iI++){
+            Malos malMalo = (Malos) lklMalos.get(iI);
+            for (int iJ = 0; iJ < lklBalas.size() ; iJ++){
+                Balas balBalas = (Balas) lklBalas.get(iJ);
+
+                if (malMalo.colisiona(balBalas)){
+                    lklBalas.remove(balBalas);
+                    iPuntos += 10;
+                    malMalo.setX((int)(Math.random() * (getWidth() - 
+                        malMalo.getAncho())));
+                    malMalo.setY(malMalo.getY()-600);
+
                 }
-            }  
+
+                if (balBalas.getY() < 0 || balBalas.getX() < 0 || 
+                        balBalas.getX() > getWidth()){
+                    lklBalas.remove(balBalas);
+                }
+            }
         }
     }
 
@@ -375,7 +415,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
                 dibujarJuego(graDibujo);
             } // si no se ha cargado se dibuja un mensaje 
             else {
-                // Da un mensaje mientras se carga el dibujo	
+                // Da un mensaje mientras se carga el dibujo    
                 graDibujo.drawString("No se cargo la imagen..", 20, 50);
             }
         } else if (iVidas ==0) {
@@ -404,11 +444,14 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         //Dibuja la imagen de principal en el Applet
         basPrincipal.paint(graDibujo, this);
         // Dibujo al malo
-        for (Base basMalo : lklMalos){
-            basMalo.paint(graDibujo, this);
+        
+        for (int iI = 0; iI < iRandMalos ; iI++){
+                Malos malMalo = (Malos) lklMalos.get(iI);
+                malMalo.paint(graDibujo, this);
         }
         if (lklBalas != null){
-            for (Balas balBalas : lklBalas){
+            for (int iJ = 0; iJ < lklBalas.size() ; iJ++){
+                Balas balBalas = (Balas) lklBalas.get(iJ);
                 balBalas.paint(graDibujo, this);
             }
         }
@@ -522,7 +565,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         // Creo las balas
             Balas balBalas = new Balas((basPrincipal.getX() + 
                     basPrincipal.getAncho()/2), basPrincipal.getY(), 
-                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 'a',3);
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 1,3);
             // Añado al malo a la lista
             lklBalas.add(balBalas);
             
@@ -534,7 +577,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         // Creo las balas
             Balas balBalas = new Balas((basPrincipal.getX() + 
                     basPrincipal.getAncho()/2), basPrincipal.getY() , 
-                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 's',3);
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 3,3);
             // Añado al malo a la lista
             lklBalas.add(balBalas);
             
@@ -545,7 +588,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         // Creo las balas
             Balas balBalas = new Balas((basPrincipal.getX() + 
                     basPrincipal.getAncho()/2), basPrincipal.getY(), 
-                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), ' ',3);
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 2,3);
             // Añado al malo a la lista
             lklBalas.add(balBalas);
             
@@ -605,17 +648,32 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
             basPrincipal.setY(Integer.parseInt(fileIn.readLine()));
                                
             iRandMalos = Integer.parseInt(fileIn.readLine());
-            lklMalos.clear();
+            lklMalos.clear();            
             // Creo a los malos
             URL urlImagenMalos = this.getClass().getResource("piedra.gif");
             for(int iI = 0; iI < iRandMalos; iI++){
             // Creo a un malo
-            Base basMalo = new Base (Integer.parseInt(fileIn.readLine()), 
+            Malos malMalo = new Malos (Integer.parseInt(fileIn.readLine()), 
                     Integer.parseInt(fileIn.readLine()), 
-                Toolkit.getDefaultToolkit().getImage(urlImagenMalos));
+                Toolkit.getDefaultToolkit().getImage(urlImagenMalos), false, 2);
             // Añado al malo a la lista
-            lklMalos.add(basMalo);
+            lklMalos.add(malMalo);
             }
+            
+            iCantBalas = Integer.parseInt(fileIn.readLine());
+            lklBalas.clear();
+            // Creo a las balas            
+             URL urlImagenBalas = this.getClass().getResource("ball.png");
+            for(int iI = 0; iI < iCantBalas; iI++){
+            // Creo a una bala
+            Balas basBala = new Balas (Integer.parseInt(fileIn.readLine()), 
+                    Integer.parseInt(fileIn.readLine()), 
+                Toolkit.getDefaultToolkit().getImage(urlImagenBalas), 
+                    Integer.parseInt(fileIn.readLine()),
+                    Integer.parseInt(fileIn.readLine()));
+            // Añado al malo a la lista
+            lklBalas.add(basBala);
+            }            
         }              
         fileIn.close();                
                
@@ -634,9 +692,18 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         fpw.println(basPrincipal.getX());
         fpw.println(basPrincipal.getY());
         fpw.println(iRandMalos);
-        for(Base basMalo : lklMalos) {
-            fpw.println(basMalo.getX());
-            fpw.println(basMalo.getY());
+        for (int iJ = 0; iJ < lklMalos.size();iJ++){
+            Malos malMalo = (Malos) lklMalos.get(iJ);
+            fpw.println(malMalo.getX());
+            fpw.println(malMalo.getY());
+        }
+        fpw.println(lklBalas.size());
+        for (int iJ = 0; iJ < lklBalas.size();iJ++){
+            Balas basBala = (Balas) lklBalas.get(iJ);
+            fpw.println(basBala.getX());
+            fpw.println(basBala.getY());
+            fpw.println(basBala.getTipo());
+            fpw.println(basBala.getVel());
         }
         fpw.close();
     }
