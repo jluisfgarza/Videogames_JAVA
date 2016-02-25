@@ -153,8 +153,7 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         int iRanMalos = iRandMalos;
         
         // Defino la de los malos.
-    URL urlImagenMalos = this.getClass().getResource("piedra.gif");
-        
+        URL urlImagenMalos = this.getClass().getResource("piedra.gif");       
         // Creo a los malos
         for(int iI = 0; iI < iRandMalos - iCantMuyMalos; iI++){
             // Creo a un malo
@@ -436,6 +435,45 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
     }
     
     /**
+     * dibujavida
+     * 
+     * En este metodo se dibuja los corazones de las vidas restantes
+     * 
+     * @param graDibujo es el objeto de <code>Graphics</code> usado para dibujar.
+     * 
+     */
+    public void dibujavida(Graphics graDibujo) {
+        //Dibuja las vidas de acuerdo a la cantidad que queden
+        switch (iVidas)
+        {
+            case 1:
+                graDibujo.drawImage(imaCora,20,40,this);                    
+            break;
+            case 2:
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);                
+            break;
+            case 3:
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);
+                graDibujo.drawImage(imaCora,40,40,this);                
+            break;
+            case 4:
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);
+                graDibujo.drawImage(imaCora,40,40,this);
+                graDibujo.drawImage(imaCora,50,40,this);                
+            break;            
+            case 5:
+                graDibujo.drawImage(imaCora,20,40,this);    
+                graDibujo.drawImage(imaCora,30,40,this);
+                graDibujo.drawImage(imaCora,40,40,this);
+                graDibujo.drawImage(imaCora,50,40,this);
+                graDibujo.drawImage(imaCora,60,40,this);        
+            break;            
+        }
+    }
+    /**
      * dibujarJuego
      * 
      * En este metodo se dibuja la imagen del juego.
@@ -468,35 +506,8 @@ public class Juego3 extends JFrame implements Runnable, KeyListener {
         graDibujo.setFont(new Font("Arial",Font.BOLD,14));
         graDibujo.setColor(Color.black);
         
-        //Dibuja las vidas de acuerdo a la cantidad que queden
-        switch (iVidas)
-        {
-            case 1:
-                graDibujo.drawImage(imaCora,20,40,this);                    
-            break;
-            case 2:
-                graDibujo.drawImage(imaCora,20,40,this);    
-                graDibujo.drawImage(imaCora,30,40,this);                
-            break;
-            case 3:
-                graDibujo.drawImage(imaCora,20,40,this);    
-                graDibujo.drawImage(imaCora,30,40,this);
-                graDibujo.drawImage(imaCora,40,40,this);                
-            break;
-            case 4:
-                graDibujo.drawImage(imaCora,20,40,this);    
-                graDibujo.drawImage(imaCora,30,40,this);
-                graDibujo.drawImage(imaCora,40,40,this);
-                graDibujo.drawImage(imaCora,50,40,this);                
-            break;            
-            case 5:
-                graDibujo.drawImage(imaCora,20,40,this);    
-                graDibujo.drawImage(imaCora,30,40,this);
-                graDibujo.drawImage(imaCora,40,40,this);
-                graDibujo.drawImage(imaCora,50,40,this);
-                graDibujo.drawImage(imaCora,60,40,this);        
-            break;            
-        }
+        dibujavida(graDibujo);
+        
         //Despliega el score
         graDibujo.drawString("          Puntos: " + iPuntos , 40, 50);        
         if (bpausa)
