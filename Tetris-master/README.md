@@ -2,7 +2,7 @@
 #### Proyecto: Tetris
 
 
-![Image of Game](https://dl.dropboxusercontent.com/u/39165599/Github%20Projects/Juego.png)
+![Image of Game](https://dl.dropboxusercontent.com/u/39165599/Github%20Projects/Tetris.png)
 
 Habilitar opciones de:
 - [ ] guardar
