@@ -229,6 +229,26 @@ public class Tetris extends JFrame {
 					}
 					break;
 				
+                                        
+                                /*
+                                * Save Game - when pressed 
+                                
+                                case KeyEvent.VK_C:
+					try {
+                                            leeArchivo();    //lee el contenido del archivo             
+                                         }
+                                         catch(IOException e){                
+                                         }          
+                          
+                                /*
+                                * Load Game - when pressed 
+                                
+                                case KeyEvent.VK_g:
+					try {
+                                            guardaArchivo();    //guarda el contenido del archivo             
+                                         }
+                                         catch(IOException e){                
+                                         }    */
 				}
 			}
 			
