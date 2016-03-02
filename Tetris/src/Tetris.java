@@ -15,7 +15,7 @@ import javax.swing.JFrame;
  */
 public class Tetris extends JFrame {
 	
-        private SoundClip clMusica;
+        
 	/**
 	 * The Serial Version UID.
 	 */
@@ -113,7 +113,14 @@ public class Tetris extends JFrame {
 	 * The speed of the game.
 	 */
 	private float gameSpeed;
-		
+        
+        /**
+         * Sound clips
+         */
+        private SoundClip scMusica; //fondo
+        private SoundClip scStack; //audio stack
+        private SoundClip scLine; //audio Line completed
+        
 	/**
 	 * Creates a new Tetris instance. Sets up the window's properties,
 	 * and adds a controller listener.
@@ -139,6 +146,13 @@ public class Tetris extends JFrame {
 		add(board, BorderLayout.CENTER);
 		add(side, BorderLayout.EAST);
 		
+                
+                /*
+                * Init Soundclips
+                */
+                scMusica = new SoundClip("tetris_converted.wav");
+                scStack = new SoundClip("stack.wav");
+                scLine = new SoundClip("line.wav");
 		/*
 		 * Adds a custom anonymous KeyListener to the frame.
 		 */
@@ -196,7 +210,7 @@ public class Tetris extends JFrame {
 				
 				/*
 			     * Rotate Clockwise - When pressed, check to see that the game is not paused
-				 * and then attempt to rotate the piece clockwise. Because of the size and
+				 * and then attempt to rotate the piece clockwise. Because of the sipze and
 				 * complexity of the rotation code, as well as it's similarity to anticlockwise
 				 * rotation, the code for rotating the piece is handled in another method.
 				 */
@@ -217,6 +231,12 @@ public class Tetris extends JFrame {
 					if(!isGameOver && !isNewGame) {
 						isPaused = !isPaused;
 						logicTimer.setPaused(isPaused);
+                                                if (isPaused){
+                                                    scMusica.stop();
+                                                }
+                                                if (!isPaused){
+                                                    scMusica.play();
+                                                }
 					}
 					break;
 				
@@ -243,7 +263,7 @@ public class Tetris extends JFrame {
 				 * back to whatever the current game speed is and clear out
 				 * any cycles that might still be elapsed.
 				 */
-				case KeyEvent.VK_S:
+				case KeyEvent.VK_SPACE:
 					logicTimer.setCyclesPerSecond(gameSpeed);
 					logicTimer.reset();
 					break;
@@ -354,6 +374,7 @@ public class Tetris extends JFrame {
 			 * we need to add the piece to the board.
 			 */
 			board.addPiece(currentType, currentCol, currentRow, currentRotation);
+                        scStack.play();
 			
 			/*
 			 * Check to see if adding the new piece resulted in any cleared lines. If so,
@@ -363,6 +384,7 @@ public class Tetris extends JFrame {
 			int cleared = board.checkLines();
 			if(cleared > 0) {
 				score += 50 << cleared;
+                                scLine.play();
 			}
 			
 			/*
@@ -416,6 +438,7 @@ public class Tetris extends JFrame {
 		logicTimer.reset();
 		logicTimer.setCyclesPerSecond(gameSpeed);
 		spawnPiece();
+                scMusica.play();
 	}
 		
 	/**
@@ -439,6 +462,7 @@ public class Tetris extends JFrame {
 		 */
 		if(!board.isValidAndEmpty(currentType, currentCol, currentRow, currentRotation)) {
 			this.isGameOver = true;
+                        scMusica.stop();
 			logicTimer.setPaused(true);
 		}		
 	}
