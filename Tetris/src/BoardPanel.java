@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-
 import javax.swing.JPanel;
+
 
 /**
  * The {@code BoardPanel} class is responsible for displaying the game grid and
@@ -105,7 +105,7 @@ public class BoardPanel extends JPanel {
 	/**
 	 * The tiles that make up the board.
 	 */
-	private TileType[][] tiles;
+	public TileType[][] tiles;
 		
 	/**
 	 * Crates a new GameBoard instance.
@@ -345,7 +345,7 @@ public class BoardPanel extends JPanel {
 			 * down until we hit a row that would cause a collision.
 			 */
 			Color base = type.getBaseColor();
-			base = new Color(base.getRed(), base.getGreen(), base.getBlue(), 30);
+			base = new Color(base.getRed(), base.getGreen(), base.getBlue(), 50);
 			for(int lowest = pieceRow; lowest < ROW_COUNT; lowest++) {
 				//If no collision is detected, try the next row.
 				if(isValidAndEmpty(type, pieceCol, lowest, rotation)) {					
@@ -432,6 +432,6 @@ public class BoardPanel extends JPanel {
 			g.drawLine(x, y + i, x + TILE_SIZE - i - 1, y + i);
 			g.drawLine(x + i, y, x + i, y + TILE_SIZE - i - 1);
 		}
-	}
+	}                     
 
 }

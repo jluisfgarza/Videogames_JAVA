@@ -11,6 +11,8 @@ import javax.swing.JFrame;
  * The {@code Tetris} class is responsible for handling much of the game logic and
  * reading user input.
  * @author Brendan Jones
+ * @author Juan Luis Flores, Carlos Serret
+ * @Version 1.1 beta
  *
  */
 public class Tetris extends JFrame {
@@ -227,28 +229,7 @@ public class Tetris extends JFrame {
 					if(isGameOver || isNewGame) {
 						resetGame();
 					}
-					break;
-				
-                                        
-                                /*
-                                * Save Game - when pressed 
-                                
-                                case KeyEvent.VK_C:
-					try {
-                                            leeArchivo();    //lee el contenido del archivo             
-                                         }
-                                         catch(IOException e){                
-                                         }          
-                          
-                                /*
-                                * Load Game - when pressed 
-                                
-                                case KeyEvent.VK_g:
-					try {
-                                            guardaArchivo();    //guarda el contenido del archivo             
-                                         }
-                                         catch(IOException e){                
-                                         }    */
+					break;				                                                                       
 				}
 			}
 			
@@ -582,6 +563,5 @@ public class Tetris extends JFrame {
 	public static void main(String[] args) {
 		Tetris tetris = new Tetris();
 		tetris.startGame();
-	}
-
+	}                           
 }
