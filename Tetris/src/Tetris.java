@@ -15,7 +15,7 @@ import javax.swing.JFrame;
  */
 public class Tetris extends JFrame {
 	
-        private Clip clMusica;
+        private SoundClip clMusica;
 	/**
 	 * The Serial Version UID.
 	 */
