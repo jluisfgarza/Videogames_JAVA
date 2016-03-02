@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import javax.swing.JPanel;
 
+import javax.swing.JPanel;
 
 /**
  * The {@code BoardPanel} class is responsible for displaying the game grid and
@@ -50,7 +50,7 @@ public class BoardPanel extends JPanel {
 	/**
 	 * The number of rows that are hidden from view.
 	 */
-	private static final int HIDDEN_ROW_COUNT = 2;
+	public static final int HIDDEN_ROW_COUNT = 2;
 	
 	/**
 	 * The total number of rows that the board contains.
@@ -105,7 +105,7 @@ public class BoardPanel extends JPanel {
 	/**
 	 * The tiles that make up the board.
 	 */
-	public TileType[][] tiles;
+	private TileType[][] tiles;
 		
 	/**
 	 * Crates a new GameBoard instance.
@@ -271,7 +271,7 @@ public class BoardPanel extends JPanel {
 	 * @param y The row.
 	 * @return The tile.
 	 */
-	private TileType getTile(int x, int y) {
+	public TileType getTile(int x, int y) {
 		return tiles[y][x];
 	}
 	
@@ -344,7 +344,7 @@ public class BoardPanel extends JPanel {
 			 * down until we hit a row that would cause a collision.
 			 */
 			Color base = type.getBaseColor();
-			base = new Color(base.getRed(), base.getGreen(), base.getBlue(), 50);
+			base = new Color(base.getRed(), base.getGreen(), base.getBlue(), 20);
 			for(int lowest = pieceRow; lowest < ROW_COUNT; lowest++) {
 				//If no collision is detected, try the next row.
 				if(isValidAndEmpty(type, pieceCol, lowest, rotation)) {					
@@ -431,6 +431,41 @@ public class BoardPanel extends JPanel {
 			g.drawLine(x, y + i, x + TILE_SIZE - i - 1, y + i);
 			g.drawLine(x + i, y, x + i, y + TILE_SIZE - i - 1);
 		}
-	}                     
+	}
+        
+        public void setState(int[][] State){
+            
+            tiles = new TileType [State.length][State[0].length];
+            
+            for(int iC = 0;iC<State.length;iC++){
+                for(int iJ = 0;iJ<State[0].length;iJ++){
+                    
+                    if(State[iC][iJ] != -1){
+                    tiles[iC][iJ] = TileType.values()[State[iC][iJ]];
+                    }
+                    
+                    else{
+                        tiles[iC][iJ] = null;
+                    }
+                }
+            }
+        }
+        
+        public int[][] getState(){
+            int State[][] = new int[tiles.length][tiles[0].length];
+            
+            for(int iI = 0; iI < tiles.length; iI++){
+                for(int iJ = 0;iJ<tiles[0].length;iJ++){
+                    
+                    if(tiles[iI][iJ] != null){
+                    State[iI][iJ] = tiles[iI][iJ].getTipo();
+                    }
+                    else{
+                        State[iI][iJ] = -1;
+                    }
+                }
+            }
+            return State;
+        }
 
 }
