@@ -9,6 +9,9 @@ import java.awt.Color;
  */
 public enum TileType {
 
+    
+        
+        
 	/**
 	 * Piece TypeI.
 	 */
@@ -190,7 +193,13 @@ public enum TileType {
 			true,	false,	false,
 		}
 	}, 6);
-		
+	
+        /**
+         *reloj para cambiar colores
+         */
+        private Clock clLogicTimer;
+        
+        
 	/**
 	 * The base color of tiles of this type.
 	 */
