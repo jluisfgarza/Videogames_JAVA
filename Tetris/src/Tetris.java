@@ -591,6 +591,7 @@ public class Tetris extends JFrame {
         
         /**
         * Guarda Archivo 
+        * Guardda el juego en un archivo binario
         */
         public void guardaJuego() throws IOException {
         RandomAccessFile rafFile = new 
@@ -619,6 +620,7 @@ public class Tetris extends JFrame {
                             
         /**
          * Carga juego
+         * Carga el juego a partir del archivo binario
          */
         public void cargaJuego() throws IOException {
 

@@ -69,7 +69,7 @@ public class SidePanel extends JPanel {
 	/**
 	 * The y coordinate of the controls category.
 	 */
-	private static final int CONTROLS_INSET = 300;
+	private static final int CONTROLS_INSET = 250;
 	
 	/**
 	 * The number of pixels to offset between each string.
@@ -89,7 +89,7 @@ public class SidePanel extends JPanel {
 	/**
 	 * The color to draw the text and preview box in.
 	 */
-	private static final Color DRAW_COLOR = new Color(128, 192, 128);
+	private static final Color DRAW_COLOR = new Color(103, 201, 218);
 	
 	/**
 	 * The Tetris instance.
