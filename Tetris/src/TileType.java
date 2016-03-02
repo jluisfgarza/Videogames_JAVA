@@ -37,7 +37,7 @@ public enum TileType {
 			false,	true,	false,	false,
 			false,	true,	false,	false,
 		}
-	}),
+	},0),
 	
 	/**
 	 * Piece TypeJ.
@@ -63,7 +63,7 @@ public enum TileType {
 			false,	true,	false,
 			true,	true,	false,
 		}
-	}),
+	},1),
 	
 	/**
 	 * Piece TypeL.
@@ -89,7 +89,7 @@ public enum TileType {
 			false,	true,	false,
 			false,	true,	false,
 		}
-	}),
+	},2),
 	
 	/**
 	 * Piece TypeO.
@@ -111,7 +111,7 @@ public enum TileType {
 			true,	true,
 			true,	true,
 		}
-	}),
+	},3),
 	
 	/**
 	 * Piece TypeS.
@@ -137,7 +137,7 @@ public enum TileType {
 			true,	true,	false,
 			false,	true,	false,
 		}
-	}),
+	},4),
 	
 	/**
 	 * Piece TypeT.
@@ -163,7 +163,7 @@ public enum TileType {
 			true,	true,	false,
 			false,	true,	false,
 		}
-	}),
+	},5),
 	
 	/**
 	 * Piece TypeZ.
@@ -189,7 +189,7 @@ public enum TileType {
 			true,	true,	false,
 			true,	false,	false,
 		}
-	});
+	}, 6);
 		
 	/**
 	 * The base color of tiles of this type.
@@ -234,6 +234,8 @@ public enum TileType {
 	 * preview, which uses rotation 0).
 	 */
 	private int cols;
+        
+        private int iTipo;
 	
 	/**
 	 * The tiles for this piece. Each piece has an array of tiles for each rotation.
@@ -248,7 +250,7 @@ public enum TileType {
 	 * @param rows The number of rows.
 	 * @param tiles The tiles.
 	 */
-	private TileType(Color color, int dimension, int cols, int rows, boolean[][] tiles) {
+	private TileType(Color color, int dimension, int cols, int rows, boolean[][] tiles, int iTipo) {
 		this.baseColor = color;
 		this.lightColor = color.brighter();
 		this.darkColor = color.darker();
@@ -256,7 +258,7 @@ public enum TileType {
 		this.tiles = tiles;
 		this.cols = cols;
 		this.rows = rows;
-		
+		this.iTipo = iTipo;
 		this.spawnCol = 5 - (dimension >> 1);
 		this.spawnRow = getTopInset(0);
 	}
@@ -267,6 +269,14 @@ public enum TileType {
 	 */
 	public Color getBaseColor() {
 		return baseColor;
+	}
+        
+        /**
+	 * Gets the tipo
+	 * @return itipo
+	 */
+	public int getTipo() {
+		return iTipo;
 	}
 	
 	/**
