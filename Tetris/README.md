@@ -5,15 +5,18 @@
 ![Image of Game](https://dl.dropboxusercontent.com/u/39165599/Github%20Projects/Tetris.png)
 
 Habilitar opciones de:
-- [ ] guardar
-- [ ] cargar
-- [ ] Uso de música de fondo
-- [ ] Sonido para cada vez que encaja una pieza se escuche
+- [x] guardar
+- [x] cargar
+- [x] Uso de música de fondo
+- [x] Sonido para cada vez que encaja una pieza se escuche
 - [ ] Animación de las piezas mientras caen (resplandecieran o algo asi)
 
 La opcion de Cargar sera con una C y la de Guardar con una G, ambas deberán de aparecer del lado derecho.
 
-
+#### Plus
+- [x] Mute para canción
+- [x] Sonido de stack de pieza y linea completa
+- [x] Restart option
 
 Criterio
 -20   Estandar de codificación

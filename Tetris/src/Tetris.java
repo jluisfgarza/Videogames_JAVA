@@ -52,6 +52,11 @@ public class Tetris extends JFrame {
 	 */
 	private boolean isNewGame;
 	
+        
+        /**
+         * Mute game boolean
+         */
+        private boolean isMuted;
 	/**
 	 * Whether or not the game is over.
 	 */
@@ -133,7 +138,7 @@ public class Tetris extends JFrame {
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		
+		isMuted = false;
 		/*
 		 * Initialize the BoardPanel and SidePanel instances.
 		 */
@@ -239,13 +244,36 @@ public class Tetris extends JFrame {
                                                 }
 					}
 					break;
-				
+                                 
+                                /**
+                                 * Mute song from game without stopping it
+                                 */        
+				case KeyEvent.VK_M:
+                                    isMuted = !isMuted;
+                                                if (isMuted){
+                                                    scMusica.stop();
+                                                    isMuted = true;
+                                                }
+                                                if (!isMuted){
+                                                    scMusica.play();
+                                                    isMuted = false;
+                                                }
+					break;
 				/*
 				 * Start Game - When pressed, check to see that we're in either a game over or new
 				 * game state. If so, reset the game.
 				 */
 				case KeyEvent.VK_ENTER:
 					if(isGameOver || isNewGame) {
+						resetGame();
+					}
+					break;								
+                                
+                                /**
+                                * Restart game with R at every point
+                                */
+                                case KeyEvent.VK_R:
+					if(!isGameOver || !isNewGame) {
 						resetGame();
 					}
 					break;
