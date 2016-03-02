@@ -5,15 +5,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 import javax.sound.sampled.Clip;
-
+import java.io.RandomAccessFile;
+import java.io.IOException;
 import javax.swing.JFrame;
 
 /**
  * The {@code Tetris} class is responsible for handling much of the game logic and
  * reading user input.
  * @author Brendan Jones
- * @author Juan Luis Flores, Carlos Serret
- * @Version 1.1 beta
  *
  */
 public class Tetris extends JFrame {
@@ -231,7 +230,8 @@ public class Tetris extends JFrame {
 					if(isGameOver || isNewGame) {
 						resetGame();
 					}
-					break;				                                                                       
+					break;
+				
 				}
 			}
 			
@@ -249,7 +249,28 @@ public class Tetris extends JFrame {
 					logicTimer.setCyclesPerSecond(gameSpeed);
 					logicTimer.reset();
 					break;
-				}
+                                        
+                                case KeyEvent.VK_G:
+                                {
+                                    try {
+                                        guardaJuego();
+                                    } 
+                                    catch(IOException ex) {
+                                    }
+                                }
+					break;
+				
+                                        
+                                case KeyEvent.VK_C:
+				{
+                                    try {
+                                        cargaJuego();
+                                    } 
+                                    catch(IOException ex) {
+                                    }
+                                }
+					break;
+                                }
 				
 			}
 			
@@ -565,5 +586,69 @@ public class Tetris extends JFrame {
 	public static void main(String[] args) {
 		Tetris tetris = new Tetris();
 		tetris.startGame();
-	}                           
+	}
+        
+        
+        /**
+        * Guarda Archivo 
+        */
+        public void guardaJuego() throws IOException {
+        RandomAccessFile rafFile = new 
+                                       RandomAccessFile("Save.dat" , "rw"); 
+        rafFile.writeInt(this.level);//level
+        rafFile.writeInt(this.score);
+        rafFile.writeInt(this.currentCol);
+        rafFile.writeInt(this.currentRow);
+        rafFile.writeInt(this.currentRotation);
+        rafFile.writeInt(currentType.getTipo());
+        rafFile.writeInt(nextType.getTipo());
+        rafFile.writeFloat(this.gameSpeed);
+        rafFile.writeBoolean(this.isGameOver);
+        rafFile.writeBoolean(this.isNewGame); 
+        
+        int matStatus[][] = board.getState();
+            
+            rafFile.writeInt(matStatus.length);
+            rafFile.writeInt(matStatus[0].length);
+            for(int iR = 0; iR < matStatus.length; iR++){
+                for(int iC = 0; iC < matStatus[0].length; iC++){
+                    rafFile.writeInt (matStatus[iR][iC]);
+                }
+            }   
+        }
+                            
+        /**
+         * Carga juego
+         */
+        public void cargaJuego() throws IOException {
+
+            RandomAccessFile rafFile = new 
+                                       RandomAccessFile("Save.dat" , "rw"); 
+            this.level = rafFile.readInt();
+            this.score = rafFile.readInt();
+            this.currentCol = rafFile.readInt();
+            this.currentRow = rafFile.readInt();
+            this.currentRotation = rafFile.readInt();
+            this.currentType = TileType.values()[rafFile.readInt()];
+            this.nextType = TileType.values()[rafFile.readInt()];
+            this.gameSpeed = rafFile.readFloat();
+            this.isGameOver = rafFile.readBoolean();
+            this.isNewGame = rafFile.readBoolean();
+            
+            logicTimer.reset();
+            logicTimer.setCyclesPerSecond(gameSpeed);
+            
+            int i = rafFile.readInt();
+            int j = rafFile.readInt();
+            int matBoard[][] = new int[i][j];
+            
+            for(int iR = 0; iR < i; iR++) {
+                for(int iC = 0; iC < j; iC++) {
+                    matBoard[iR][iC] = rafFile.readInt();
+                }
+            }
+            
+            board.clear();
+            board.setState(matBoard);                                   
+        }
 }
