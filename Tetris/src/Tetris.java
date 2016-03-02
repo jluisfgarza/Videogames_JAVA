@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
+import javax.sound.sampled.Clip;
 
 import javax.swing.JFrame;
 
@@ -17,6 +18,7 @@ import javax.swing.JFrame;
  */
 public class Tetris extends JFrame {
 	
+        private Clip clMusica;
 	/**
 	 * The Serial Version UID.
 	 */
@@ -155,7 +157,7 @@ public class Tetris extends JFrame {
 				 * paused and that there is no drop cooldown, then set the
 				 * logic timer to run at a speed of 25 cycles per second.
 				 */
-				case KeyEvent.VK_S:
+				case KeyEvent.VK_SPACE:
 					if(!isPaused && dropCooldown == 0) {
 						logicTimer.setCyclesPerSecond(25.0f);
 					}
@@ -166,7 +168,7 @@ public class Tetris extends JFrame {
 				 * not paused and that the position to the left of the current
 				 * position is valid. If so, we decrement the current column by 1.
 				 */
-				case KeyEvent.VK_A:
+				case KeyEvent.VK_LEFT:
 					if(!isPaused && board.isValidAndEmpty(currentType, currentCol - 1, currentRow, currentRotation)) {
 						currentCol--;
 					}
@@ -177,7 +179,7 @@ public class Tetris extends JFrame {
 				 * not paused and that the position to the right of the current
 				 * position is valid. If so, we increment the current column by 1.
 				 */
-				case KeyEvent.VK_D:
+				case KeyEvent.VK_RIGHT:
 					if(!isPaused && board.isValidAndEmpty(currentType, currentCol + 1, currentRow, currentRotation)) {
 						currentCol++;
 					}
@@ -189,7 +191,7 @@ public class Tetris extends JFrame {
 				 * complexity of the rotation code, as well as it's similarity to clockwise
 				 * rotation, the code for rotating the piece is handled in another method.
 				 */
-				case KeyEvent.VK_Q:
+				case KeyEvent.VK_DOWN:
 					if(!isPaused) {
 						rotatePiece((currentRotation == 0) ? 3 : currentRotation - 1);
 					}
@@ -201,7 +203,7 @@ public class Tetris extends JFrame {
 				 * complexity of the rotation code, as well as it's similarity to anticlockwise
 				 * rotation, the code for rotating the piece is handled in another method.
 				 */
-				case KeyEvent.VK_E:
+				case KeyEvent.VK_UP:
 					if(!isPaused) {
 						rotatePiece((currentRotation == 3) ? 0 : currentRotation + 1);
 					}
