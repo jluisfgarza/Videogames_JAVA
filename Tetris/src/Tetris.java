@@ -1,4 +1,7 @@
 
+/**
+ * @author Juan Luis Flores Garza A01280767, Carlos Serret A01281072
+ */
 import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
