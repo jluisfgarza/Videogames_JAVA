@@ -677,11 +677,11 @@ public class Tetris extends JFrame {
         rafFile.writeFloat(this.gameSpeed);
         rafFile.writeBoolean(this.isGameOver);
         rafFile.writeBoolean(this.isNewGame);        
-        
-        int matStatus[][] = board.getState();
-        
+        //Save board state, rows, and columns
+        int matStatus[][] = board.getState();      
         rafFile.writeInt(matStatus.length);
         rafFile.writeInt(matStatus[0].length);
+        // VIsit every cel of the matrix and save it
         for (int iR = 0; iR < matStatus.length; iR++) {
             for (int iC = 0; iC < matStatus[0].length; iC++) {
                 rafFile.writeInt(matStatus[iR][iC]);
@@ -708,11 +708,11 @@ public class Tetris extends JFrame {
         
         logicTimer.reset();
         logicTimer.setCyclesPerSecond(gameSpeed);
-        
+        //Load board state, rows, and columns
         int i = rafFile.readInt();
         int j = rafFile.readInt();
         int matBoard[][] = new int[i][j];
-        
+        //Load every cell of the matrix
         for (int iR = 0; iR < i; iR++) {
             for (int iC = 0; iC < j; iC++) {
                 matBoard[iR][iC] = rafFile.readInt();

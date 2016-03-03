@@ -449,11 +449,15 @@ public class BoardPanel extends JPanel {
             g.drawLine(x + i, y, x + i, y + TILE_SIZE - i - 1);
         }
     }
-
+    /**
+    * setState
+    * 
+    * save each cell state and type 
+    */
     public void setState(int[][] State) {
-
+        // Create title similar to the board
         tiles = new TileType[State.length][State[0].length];
-
+        // If different from -1 assign a value to the cel 
         for (int iC = 0; iC < State.length; iC++) {
             for (int iJ = 0; iJ < State[0].length; iJ++) {
 
@@ -465,13 +469,20 @@ public class BoardPanel extends JPanel {
             }
         }
     }
-
+    
+    /**
+    * getState
+    * 
+    * get the state of each cell
+    * 
+    */
     public int[][] getState() {
+        // New matrix for sotring the type of piece 
         int State[][] = new int[tiles.length][tiles[0].length];
-
+        // In case of a null value on a cel assign -1 else assign a value
         for (int iI = 0; iI < tiles.length; iI++) {
             for (int iJ = 0; iJ < tiles[0].length; iJ++) {
-
+                
                 if (tiles[iI][iJ] != null) {
                     State[iI][iJ] = tiles[iI][iJ].getTipo();
                 } else {
