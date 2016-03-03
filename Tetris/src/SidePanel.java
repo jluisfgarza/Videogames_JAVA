@@ -159,7 +159,7 @@ public class SidePanel extends JPanel {
          */
         g.setFont(LARGE_FONT);
         g.drawString("Next Piece:", SMALL_INSET+10, 70);
-        g.drawRect(SQUARE_CENTER_X - SQUARE_SIZE+20, SQUARE_CENTER_Y - SQUARE_SIZE, SQUARE_SIZE * 3, SQUARE_SIZE * 3);
+        g.drawRect(SQUARE_CENTER_X - SQUARE_SIZE+20, SQUARE_CENTER_Y - SQUARE_SIZE, SQUARE_SIZE * 2, SQUARE_SIZE * 2);
 
         /*
          * Draw a preview of the next piece that will be spawned. The code is pretty much
@@ -213,6 +213,8 @@ public class SidePanel extends JPanel {
         /*
          * Fill the entire tile with the base color.
          */
+        x +=20; 
+        y +=5;
         g.setColor(type.getBaseColor());
         g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
