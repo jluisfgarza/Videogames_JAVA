@@ -5,7 +5,9 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.io.RandomAccessFile;
 import java.io.IOException;
+import java.util.Timer;
 import javax.swing.JFrame;
+import java.util.TimerTask;
 
 /**
  * The {@code Tetris} class is responsible for handling much of the game logic
@@ -14,7 +16,7 @@ import javax.swing.JFrame;
  * @author Brendan Jones
  *
  */
-public class Tetris extends JFrame {
+public class Tetris extends JFrame{
 
     /**
      * The Serial Version UID.
@@ -124,6 +126,11 @@ public class Tetris extends JFrame {
     private SoundClip scStack; //audio stack
     private SoundClip scLine; //audio Line completed
 
+    /**
+     * 
+     */
+    
+    
     /**
      * Creates a new Tetris instance. Sets up the window's properties, and adds
      * a controller listener.
@@ -334,6 +341,8 @@ public class Tetris extends JFrame {
         this.random = new Random();
         this.isNewGame = true;
         this.gameSpeed = 1.0f;
+        
+        
 
         /*
          * Setup the timer to keep the game from running before the user presses enter
@@ -342,13 +351,13 @@ public class Tetris extends JFrame {
         this.logicTimer = new Clock(gameSpeed);
         logicTimer.setPaused(true);
         
+        
         while (true) {
             //Get the time that the frame started.
             long start = System.nanoTime();
 
             //Update the logic timer.
             logicTimer.update();
-
             /*
              * If a cycle has elapsed on the timer, we can update the game and
              * move our current piece down.
@@ -383,13 +392,16 @@ public class Tetris extends JFrame {
      * Updates the game and handles the bulk of it's logic.
      */
     private void updateGame() {
+        
         /*
          * Check to see if the piece's position can move down to the next row.
          */
+        
+        
         if (board.isValidAndEmpty(currentType, currentCol, currentRow + 1, currentRotation)) {
             //Increment the current row if it's safe to do so.
             currentRow++;
-            currentType.actualizaColor();
+            //currentType.actualizaColor();
         } else {
             /*
              * We've either reached the bottom of the board, or landed on another piece, so
@@ -704,4 +716,13 @@ public class Tetris extends JFrame {
         board.clear();
         board.setState(matBoard);        
     }
+    
+    public void ActualizarTiles(){
+        
+            currentType.actualizaColor();
+        
+        
+    }
+    
+    
 }

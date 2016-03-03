@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import javax.swing.Timer;
 
 /**
  * The {@code PieceType} enum describes the properties of the various pieces
@@ -161,8 +162,9 @@ public enum TileType {
     /**
      * reloj para cambiar colores
      */
-    private Clock clLogicTimer;
-
+    private long start_time = System.nanoTime();
+    
+    
     /**
      * The base color of tiles of this type.
      */
@@ -241,6 +243,7 @@ public enum TileType {
         this.spawnCol = 5 - (dimension >> 1);
         this.spawnRow = getTopInset(0);
         this.iCont =0;
+        
     }
 
     /**
@@ -447,6 +450,7 @@ public enum TileType {
         iCont++;
         if (iCont==2){
             this.setColor(this.getLightColor());
+            
         }
         if (iCont==3){
             this.setColor(this.getDarkColor());
