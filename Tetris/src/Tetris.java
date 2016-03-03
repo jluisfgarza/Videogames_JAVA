@@ -16,7 +16,7 @@ import java.util.TimerTask;
  * @author Brendan Jones
  *
  */
-public class Tetris extends JFrame{
+public class Tetris extends JFrame {
 
     /**
      * The Serial Version UID.
@@ -86,7 +86,7 @@ public class Tetris extends JFrame{
     /**
      * The current type of tile.
      */
-    private TileType currentType;
+    static private TileType currentType;
 
     /**
      * The next type of tile.
@@ -125,12 +125,10 @@ public class Tetris extends JFrame{
     private SoundClip scMusica; //fondo
     private SoundClip scStack; //audio stack
     private SoundClip scLine; //audio Line completed
+    static private Timer timer;
+    
+    
 
-    /**
-     * 
-     */
-    
-    
     /**
      * Creates a new Tetris instance. Sets up the window's properties, and adds
      * a controller listener.
@@ -139,6 +137,7 @@ public class Tetris extends JFrame{
         /*
          * Set the basic properties of the window.
          */
+        
         super("Tetris");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -341,8 +340,6 @@ public class Tetris extends JFrame{
         this.random = new Random();
         this.isNewGame = true;
         this.gameSpeed = 1.0f;
-        
-        
 
         /*
          * Setup the timer to keep the game from running before the user presses enter
@@ -352,12 +349,15 @@ public class Tetris extends JFrame{
         logicTimer.setPaused(true);
         
         
+        
+        
         while (true) {
             //Get the time that the frame started.
             long start = System.nanoTime();
 
             //Update the logic timer.
             logicTimer.update();
+
             /*
              * If a cycle has elapsed on the timer, we can update the game and
              * move our current piece down.
@@ -392,11 +392,9 @@ public class Tetris extends JFrame{
      * Updates the game and handles the bulk of it's logic.
      */
     private void updateGame() {
-        
         /*
          * Check to see if the piece's position can move down to the next row.
          */
-        
         
         if (board.isValidAndEmpty(currentType, currentCol, currentRow + 1, currentRotation)) {
             //Increment the current row if it's safe to do so.
@@ -473,6 +471,13 @@ public class Tetris extends JFrame{
         logicTimer.setCyclesPerSecond(gameSpeed);
         spawnPiece();
         scMusica.play();
+        timer = new Timer();
+        timer.schedule(new TimerTask(){
+            public void run(){
+                currentType.actualizaColor();
+            }
+            
+        },0,500);
     }
 
     /**
@@ -654,6 +659,7 @@ public class Tetris extends JFrame{
     public static void main(String[] args) {
         Tetris tetris = new Tetris();
         tetris.startGame();
+        
     }
 
     /**
@@ -717,12 +723,7 @@ public class Tetris extends JFrame{
         board.setState(matBoard);        
     }
     
-    public void ActualizarTiles(){
-        
-            currentType.actualizaColor();
-        
-        
+    private void ActualizarTiles(){
+        currentType.actualizaColor();
     }
-    
-    
 }
