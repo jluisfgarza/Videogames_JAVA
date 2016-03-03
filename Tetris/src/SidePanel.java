@@ -3,8 +3,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-
+import java.awt.Image;
+import java.awt.Toolkit;
 import javax.swing.JPanel;
+import java.net.URL;
 
 /**
  * The {@code SidePanel} class is responsible for displaying various information
@@ -15,7 +17,10 @@ import javax.swing.JPanel;
  *
  */
 public class SidePanel extends JPanel {
-
+    /**
+     * 
+     */
+    private Image imgControl;
     /**
      * Serial Version UID.
      */
@@ -71,7 +76,7 @@ public class SidePanel extends JPanel {
     /**
      * The y coordinate of the controls category.
      */
-    private static final int CONTROLS_INSET = 220;
+    private static final int CONTROLS_INSET = 180;
 
     /**
      * The number of pixels to offset between each string.
@@ -106,8 +111,10 @@ public class SidePanel extends JPanel {
     public SidePanel(Tetris tetris) {
         this.tetris = tetris;
 
-        setPreferredSize(new Dimension(200, BoardPanel.PANEL_HEIGHT));
+        setPreferredSize(new Dimension(300, BoardPanel.PANEL_HEIGHT));
         setBackground(Color.BLACK);
+        URL urlImagen = this.getClass().getResource("Controls.png");
+        imgControl = Toolkit.getDefaultToolkit().getImage(urlImagen);
     }
 
     @Override
@@ -128,22 +135,20 @@ public class SidePanel extends JPanel {
          * Draw the "Stats" category.
          */
         g.setFont(LARGE_FONT);
-        g.drawString("Stats", SMALL_INSET, offset = STATS_INSET);
-        g.setFont(SMALL_FONT);
-        g.drawString("Level: " + tetris.getLevel(), LARGE_INSET, offset += TEXT_STRIDE);
-        g.drawString("Score: " + tetris.getScore(), LARGE_INSET, offset += TEXT_STRIDE);
+        offset = STATS_INSET;
+        g.drawString("Level: " + tetris.getLevel()+"          "
+                + "             Score: " + tetris.getScore(), LARGE_INSET, offset += TEXT_STRIDE);
+
 
         /*
          * Draw the "Controls" category.
          */
         g.setFont(LARGE_FONT);
         g.drawString("Controls", SMALL_INSET, offset = CONTROLS_INSET);
+        g.drawImage(imgControl, 50, 170, this);
+        
         g.setFont(SMALL_FONT);
-        g.drawString("Left - Move Left", LARGE_INSET, offset += TEXT_STRIDE);
-        g.drawString("Right - Move Right", LARGE_INSET, offset += TEXT_STRIDE);
-        g.drawString("Up - Rotate Clockwise", LARGE_INSET, offset += TEXT_STRIDE);
-        g.drawString("Down - Rotate AntiClock", LARGE_INSET, offset += TEXT_STRIDE);
-        g.drawString("Space - Drop", LARGE_INSET, offset += TEXT_STRIDE);
+        offset +=TEXT_STRIDE+130 ;        
         g.drawString("P - Pause Game", LARGE_INSET, offset += TEXT_STRIDE);
         g.drawString("G - Save Game", LARGE_INSET, offset += TEXT_STRIDE);
         g.drawString("C - Load Game", LARGE_INSET, offset += TEXT_STRIDE);
@@ -153,8 +158,8 @@ public class SidePanel extends JPanel {
          * Draw the next piece preview box.
          */
         g.setFont(LARGE_FONT);
-        g.drawString("Next Piece:", SMALL_INSET, 70);
-        g.drawRect(SQUARE_CENTER_X - SQUARE_SIZE, SQUARE_CENTER_Y - SQUARE_SIZE, SQUARE_SIZE * 2, SQUARE_SIZE * 2);
+        g.drawString("Next Piece:", SMALL_INSET+10, 70);
+        g.drawRect(SQUARE_CENTER_X - SQUARE_SIZE+20, SQUARE_CENTER_Y - SQUARE_SIZE, SQUARE_SIZE * 3, SQUARE_SIZE * 3);
 
         /*
          * Draw a preview of the next piece that will be spawned. The code is pretty much
