@@ -16,6 +16,11 @@ import javax.swing.JPanel;
 public class BoardPanel extends JPanel {
 
     /**
+     * The color to draw the text and preview box in.
+     */
+    private static final Color DRAW_COLOR = new Color(103, 201, 218);    
+    
+    /**
      * Serial Version UID.
      */
     private static final long serialVersionUID = 5055679736784226108L;
@@ -296,12 +301,12 @@ public class BoardPanel extends JPanel {
          */
         if (tetris.isPaused()) {
             g.setFont(LARGE_FONT);
-            g.setColor(Color.WHITE);
+            g.setColor(DRAW_COLOR);
             String msg = "PAUSED";
             g.drawString(msg, CENTER_X - g.getFontMetrics().stringWidth(msg) / 2, CENTER_Y);
         } else if (tetris.isNewGame() || tetris.isGameOver()) {
             g.setFont(LARGE_FONT);
-            g.setColor(Color.WHITE);
+            g.setColor(DRAW_COLOR);
 
             /*
              * Because both the game over and new game screens are nearly identical,
