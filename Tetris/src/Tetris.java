@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
-import javax.sound.sampled.Clip;
 import java.io.RandomAccessFile;
 import java.io.IOException;
 import javax.swing.JFrame;
@@ -156,6 +155,7 @@ public class Tetris extends JFrame {
                 * Init Soundclips
                 */
                 scMusica = new SoundClip("tetris_converted.wav");
+                scMusica.setLooping(true);
                 scStack = new SoundClip("stack.wav");
                 scLine = new SoundClip("line.wav");
 		/*
