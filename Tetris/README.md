@@ -9,7 +9,7 @@ Habilitar opciones de:
 - [x] cargar
 - [x] Uso de música de fondo
 - [x] Sonido para cada vez que encaja una pieza se escuche
-- [ ] Animación de las piezas mientras caen (resplandecieran o algo asi)
+- [x] Animación de las piezas mientras caen (resplandecieran o algo asi)
 
 La opcion de Cargar sera con una C y la de Guardar con una G, ambas deberán de aparecer del lado derecho.
 
