@@ -725,8 +725,4 @@ public class Tetris extends JFrame {
         board.clear();
         board.setState(matBoard);        
     }
-    
-    private void ActualizarTiles(){
-        currentType.actualizaColor();
-    }
 }
