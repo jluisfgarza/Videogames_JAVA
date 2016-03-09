@@ -7,17 +7,39 @@
  */
 public enum TileType {
 
-	Fruit,
+	Fruit (0),
 	
-	SnakeHead,
+	SnakeHead (1),
 	
-	SnakeBody,
+	SnakeBody (2),
         
-        Badfruit, 
+        Badfruit (3), 
         
-        Fruit1, 
+        Fruit1 (4), 
         
-        Fruit2
+        Fruit2 (5);
+                        
+        /**
+        * Define a type of fruit                
+        */
+        private int iTipo;
 	
+         /**
+     * Creates a new TileType.     
+     * @param iTipo The tipe of fruit.
+     */
+    private TileType(int iTipo) {
+        this.iTipo = iTipo;        
+    }
+        
+    /**
+    * Gets the tipo
+    *
+    * @return itipo
+    */
+    public int getTipo() { 
+        return iTipo;
+        }
+
 }
 

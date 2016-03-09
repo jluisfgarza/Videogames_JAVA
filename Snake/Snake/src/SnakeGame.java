@@ -1,10 +1,14 @@
-
+/**
+ * @author Juan Luis Flores Garza A01280767, Carlos Serret A01281072
+ */
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.Random;
+import java.io.RandomAccessFile;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -234,7 +238,30 @@ public class SnakeGame extends JFrame {
                         break;
                 }
             }
-
+            
+            @Override
+            public void keyReleased(KeyEvent e) {
+                
+                switch (e.getKeyCode()) {
+                    
+                    case KeyEvent.VK_G: {
+                        try {
+                            guardaJuego();
+                        } catch (IOException ex) {
+                        }
+                    }
+                    break;
+                    
+                    case KeyEvent.VK_C: {
+                        try {
+                            cargaJuego();
+                        } catch (IOException ex) {
+                        }
+                    }
+                    break;
+                }
+                
+            }
         });
 
         /*
@@ -709,4 +736,51 @@ public class SnakeGame extends JFrame {
         snake.startGame();
     }
 
+     /**
+     * Guarda Archivo Guardda el juego en un archivo binario
+     */
+    public void guardaJuego() throws IOException {
+        RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");        
+        rafFile.writeInt(this.score);
+        rafFile.writeInt(this.fruitsEaten);
+        rafFile.writeInt(this.nextFruitScore);
+               
+        rafFile.writeBoolean(this.isGameOver);
+        rafFile.writeBoolean(this.isNewGame);   
+        rafFile.writeBoolean(this.isPaused);        
+        //Save board state, rows, and columns
+        int matStatus[] = board.getState();      
+        rafFile.writeInt(matStatus.length);        
+        // Visit every cel of the matrix and save it
+        for (int iR = 0; iR < matStatus.length; iR++) {            
+                rafFile.writeInt(matStatus[iR]);            
+        }        
+    }
+
+    /**
+     * Carga juego Carga el juego a partir del archivo binario
+     */
+    public void cargaJuego() throws IOException {
+        
+        RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");                
+        this.score = rafFile.readInt();
+        this.fruitsEaten = rafFile.readInt();
+        this.nextFruitScore = rafFile.readInt();
+                        
+        this.isGameOver = rafFile.readBoolean();
+        this.isNewGame = rafFile.readBoolean();
+        this.isPaused = rafFile.readBoolean(); 
+        
+        logicTimer.reset();        
+        //Load board state, rows, and columns
+        int i = rafFile.readInt();        
+        int arrBoard[] = new int[i];
+        //Load every cell of the matrix
+        for (int iR = 0; iR < i; iR++) {            
+                arrBoard[iR] = rafFile.readInt();            
+        }
+        
+        board.clear();                
+        board.setState(arrBoard);
+    }
 }
