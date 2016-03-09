@@ -9,23 +9,45 @@ public enum Direction {
 	/**
 	 * Moving North (Up).
 	 */
-	North,
+	North (0),
 	
 	/**
 	 * Moving East (Right).
 	 */
-	East,
+	East (1),
 	
 	/**
 	 * Moving South (Down).
 	 */
-	South,
+	South (2),
 	
 	/**
 	 * Moving West (Left).
 	 */
-	West
+	West (3);
 	
+        /**
+        * Define a type of fruit                
+        */
+        private int idir;
+	
+         /**
+     * Creates a new TileType.     
+     * @param iTipo The idir of snake.
+     */
+    private Direction(int idir) {
+        this.idir = idir;        
+    }
+        
+    /**
+    * Gets the direction
+    *
+    * @return idir
+    */
+    public int getdir() { 
+        return idir;
+        }
+        
 }
 
 

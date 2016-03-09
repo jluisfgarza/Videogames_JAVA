@@ -359,5 +359,67 @@ public class BoardPanel extends JPanel {
                 break;
         }
     }
+    
+    /**
+    * setState
+    * 
+    * save each cell state and type 
+    */
+    public void setState(int[] State) {
+        // Create title similar to the board
+        tiles = new TileType[State.length];
+        // If different from -1 assign a value to the cel 
+        for (int iC = 0; iC < State.length; iC++) {            
+                if (State[iC] != -1) {
+                    tiles[iC] = TileType.values()[State[iC]];
+                } else {
+                    tiles[iC] = null;
+                }            
+        }
+    }
+    
+    /**
+    * getState
+    * 
+    * get the state of each cell
+    * 
+    */
+    public int[] getState() {
+        // New matrix for sotring the type of piece 
+        int State[] = new int[tiles.length];
+        // In case of a null value on a cel assign -1 else assign a value
+        for (int iI = 0; iI < tiles.length; iI++) {                           
+                if (tiles[iI] != null) {
+                    State[iI] = tiles[iI].getTipo();
+                }                 
+                else {
+                    State[iI] = -1;
+                }            
+        }
+        return State;
+    }
 
+    /**
+     * Resets the board and clears away any tiles.
+     */
+    public void clear() {
+        /*
+         * Loop through every tile index and set it's value
+         * to null to clear the board.
+         */
+        for (int i = 0; i < ROW_COUNT; i++) {            
+                tiles[i] = null;            
+        }
+    }
+    
+    public void clearsnake() {
+        /*
+         * Loop through every tile index and set it's value
+         * to null if snake is found
+         */
+        for (int i = 0; i < ROW_COUNT; i++) { 
+            if (tiles[i].getTipo() == 1 || tiles[i].getTipo() == 2)
+                tiles[i] = null;            
+        }
+    }
 }
