@@ -103,7 +103,7 @@ public class SnakeGame extends JFrame {
     /**
      * The current tiletype that the snake just grabbed.
      */
-    private TileType currentTileType = TileType.Fruit;
+    private TileType currentTileType = null;
 
     /**
      * Creates a new SnakeGame instance. Creates a new window, and sets up the
@@ -437,7 +437,6 @@ public class SnakeGame extends JFrame {
                 board.setTile(snake.peekFirst(), TileType.SnakeBody);
                 snake.push(head);
                 board.setTile(head, TileType.SnakeHead);
-                currentTileType = null;
             }
             if (getCurrentTile() == TileType.Fruit2) {
                 board.setTile(snake.peekFirst(), TileType.SnakeBody);
@@ -446,9 +445,9 @@ public class SnakeGame extends JFrame {
                 board.setTile(snake.peekFirst(), TileType.SnakeBody);
                 snake.push(head);
                 board.setTile(head, TileType.SnakeHead);
-                currentTileType = null;
             }
         }
+        currentTileType= null;
 
         return old;
     }

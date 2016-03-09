@@ -229,7 +229,7 @@ public class BoardPanel extends JPanel {
                 g.fillOval(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
                 break;
             case Fruit1:
-                g.setColor(Color.YELLOW);
+                g.setColor(Color.GREEN);
                 g.fillOval(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
                 break;
             case Fruit2:
@@ -256,8 +256,23 @@ public class BoardPanel extends JPanel {
              * entire tile.
              */
             case SnakeBody:
-                g.setColor(Color.ORANGE);
-                g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                
+                if (game.getCurrentTile() == TileType.Fruit) {
+                    g.setColor(Color.RED);
+                    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                }
+                else if (game.getCurrentTile() == TileType.Fruit1) {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                }
+                else if (game.getCurrentTile() == TileType.Fruit2) {
+                    g.setColor(Color.BLUE);
+                    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                }
+                else {
+                    g.setColor(Color.ORANGE);
+                    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                }
                 break;
 
             /*
