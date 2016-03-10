@@ -5,10 +5,14 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.LinkedList;
 import java.util.Random;
 import java.io.RandomAccessFile;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
 
@@ -725,6 +729,15 @@ public class SnakeGame extends JFrame {
     public Direction getDirection() {
         return directions.peek();
     }
+    
+    /**
+     * @func getDirections()
+     * @return directions
+     * funcion que regresa la lista encadenada de directions de la snake
+     */
+    public LinkedList <Direction> getDirections() {
+        return directions;
+    }
 
     /**
      * Entry point of the program.
@@ -736,33 +749,120 @@ public class SnakeGame extends JFrame {
         snake.startGame();
     }
 
+    /**
+     * @func getBoard()
+     * @return board
+     * funcion que regresa el board del juego
+     */
+    public BoardPanel getBoard() {
+        return board;
+    }
+    
+    
+    /*
+    * @func setSnake()
+    * Funcion que cambia los valores de la lista encadenada de puntos de la snake
+    */
+    public void setSnake(LinkedList <Point> sSnake) {
+        //cambio el valor de los puntos de la snake
+        snake = sSnake;
+    }
+    
+    /*
+    *  @func getSnake()
+    * Funcion que regresa el valor de la lista encadenada de puntos de la snake
+    */
+    public LinkedList <Point> getSnake() {
+        //regresa la lista encadenada snake
+        return snake;
+    }
+    
+    
+    public void setNextFruitScore(int iNFS){
+        nextFruitScore = iNFS;
+    }
+    
+    
+     /**
+     * @func setScore()
+     * @param iScore 
+     * funcion que cambia el score del juego
+     */
+    public void setScore(int iScore) { 
+        score = iScore;
+    }
+    /**
+     * @func setFruitsEaten()
+     * @param iFruitsE 
+     * Funcion que cambia el valor de las frutas que han sido comidas
+     */
+    public void setFruitsEaten(int iFruitsE){
+        fruitsEaten = iFruitsE;
+    }
+    
+    
+    /**
+     * @func setDirection()
+     * @param lklDirection 
+     * Funcion que cambia los valores de la lista encadenada direccion
+     */
+    public void setDirection(LinkedList <Direction> lklDirection){
+        directions = lklDirection; 
+    }
+    /**
+     * @func setGameOver()
+     * @param bGameOver 
+     * Funcion que cambia el valor booleano de isGameOver
+     */
+    public void setGameOver(boolean bGameOver)  { 
+        isGameOver = bGameOver;
+    }
+    /**
+     * @func setNewGame()
+     * @param bNewGame 
+     * Funcion que cambia el valor booleano de isNewGame
+     */
+    public void setNewGame(boolean bNewGame) {
+        isNewGame = bNewGame;
+    }
      /**
      * Guarda Archivo Guardda el juego en un archivo binario
      */
     public void guardaJuego() throws IOException {
-        RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");        
+        /*RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");        
         rafFile.writeInt(this.score);
         rafFile.writeInt(this.fruitsEaten);
         rafFile.writeInt(this.nextFruitScore);
-               
         rafFile.writeBoolean(this.isGameOver);
         rafFile.writeBoolean(this.isNewGame);   
-        rafFile.writeBoolean(this.isPaused);        
+        rafFile.writeBoolean(this.isPaused);   
         //Save board state, rows, and columns
         int matStatus[] = board.getState();      
         rafFile.writeInt(matStatus.length);        
         // Visit every cel of the matrix and save it
         for (int iR = 0; iR < matStatus.length; iR++) {            
                 rafFile.writeInt(matStatus[iR]);            
-        }        
+        }        */
+        ObjectOutputStream oosArchivo = new ObjectOutputStream(new FileOutputStream("Save.bin"));
+
+        oosArchivo.writeInt(this.getScore()); //GuardaScore
+        oosArchivo.writeInt(this.getFruitsEaten()); // Guarda Fruist Eaten
+        oosArchivo.writeInt(this.getNextFruitScore()); //Guarda Next Fruit Score
+        oosArchivo.writeObject(this.getDirections()); //Guarda Direction
+        oosArchivo.writeObject(this.getBoard().getTileType()); //Guarda Board y Tile Type
+        oosArchivo.writeBoolean(this.isGameOver()); //Guarda isGameOver
+        oosArchivo.writeBoolean(this.isNewGame()); //Guarda isNewGame
+        oosArchivo.writeObject(this.getSnake()); //Guarda los puntos del snake
+        //cierro el archivo
+        oosArchivo.close();
     }
 
     /**
      * Carga juego Carga el juego a partir del archivo binario
      */
-    public void cargaJuego() throws IOException {
+    public void cargaJuego() throws IOException, ClassNotFoundException {
         
-        RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");                
+        /*RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");                
         this.score = rafFile.readInt();
         this.fruitsEaten = rafFile.readInt();
         this.nextFruitScore = rafFile.readInt();
@@ -784,6 +884,19 @@ public class SnakeGame extends JFrame {
         
         
         board.clear();                
-        board.setState(arrBoard);
+        board.setState(arrBoard);*/
+        ObjectInputStream oisArchivo = new ObjectInputStream(new FileInputStream("Save.bin"));
+        
+        this.setScore((int) oisArchivo.readInt()); //Lee el score y lo actualiza
+        this.setFruitsEaten((int) oisArchivo.readInt()); //lee el numero de frutas comidas y lo actualiza
+        this.setNextFruitScore((int) oisArchivo.readInt()); //lee  y actualiza el puntaje de la fruta 
+        this.setDirection((LinkedList) oisArchivo.readObject());//lee la direccion y la actualiza
+        this.getBoard().setTile((TileType [])oisArchivo.readObject()); //lee los tiles del board y actualiza
+        this.setGameOver((boolean) oisArchivo.readBoolean()); //lee y actualiza el GameOver
+        this.setNewGame((boolean) oisArchivo.readBoolean()); //lee y actualiza el NewGamew
+        this.setSnake((LinkedList) oisArchivo.readObject()); //lee y actualiza los puntos de la serpiente
+        
+        //cierro el archivo
+        oisArchivo.close();
     }
 }

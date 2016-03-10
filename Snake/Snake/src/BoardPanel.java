@@ -399,6 +399,11 @@ public class BoardPanel extends JPanel {
         return State;
     }
 
+     public TileType[] getTileType(){
+        
+        return tiles;
+    }
+     
     /**
      * Resets the board and clears away any tiles.
      */
@@ -422,4 +427,10 @@ public class BoardPanel extends JPanel {
                 tiles[i] = null;            
         }
     }
+    
+    public void setTile(TileType[] ttTiles){
+        
+        this.tiles = ttTiles;
+    }
+    
 }
