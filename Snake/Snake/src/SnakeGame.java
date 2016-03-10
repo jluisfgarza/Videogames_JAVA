@@ -775,10 +775,13 @@ public class SnakeGame extends JFrame {
         //Load board state, rows, and columns
         int i = rafFile.readInt();        
         int arrBoard[] = new int[i];
+        
+        Point head;
         //Load every cell of the matrix
         for (int iR = 0; iR < i; iR++) {            
                 arrBoard[iR] = rafFile.readInt();            
         }
+        
         
         board.clear();                
         board.setState(arrBoard);
