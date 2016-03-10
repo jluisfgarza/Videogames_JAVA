@@ -1,18 +1,21 @@
 /**
  * @author Juan Luis Flores Garza A01280767, Carlos Serret A01281072
  */
+
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.LinkedList;
-import java.util.Random;
-import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
@@ -248,20 +251,24 @@ public class SnakeGame extends JFrame {
                 
                 switch (e.getKeyCode()) {
                     
-                    case KeyEvent.VK_G: {
-                        try {
-                            guardaJuego();
-                        } catch (IOException ex) {
+                      case KeyEvent.VK_G:
+                        if (!isGameOver) {
+                            try {
+                                guardaJuego();
+                            } catch (IOException ioE) {
+                            }
                         }
+                        break;
+                        //Tecla C  - Carga el juego
+                    case KeyEvent.VK_C:
+                        if (!isGameOver) {
+                            try {
+                                cargaJuego();
+                            } catch (IOException ioE) {
+                            } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    break;
-                    
-                    case KeyEvent.VK_C: {
-                        try {
-                            cargaJuego();
-                        } catch (IOException ex) {
                         }
-                    }
                     break;
                 }
                 
