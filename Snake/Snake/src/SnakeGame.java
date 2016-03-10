@@ -836,32 +836,19 @@ public class SnakeGame extends JFrame {
      * Guarda Archivo Guardda el juego en un archivo binario
      */
     public void guardaJuego() throws IOException {
-        /*RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");        
-        rafFile.writeInt(this.score);
-        rafFile.writeInt(this.fruitsEaten);
-        rafFile.writeInt(this.nextFruitScore);
-        rafFile.writeBoolean(this.isGameOver);
-        rafFile.writeBoolean(this.isNewGame);   
-        rafFile.writeBoolean(this.isPaused);   
-        //Save board state, rows, and columns
-        int matStatus[] = board.getState();      
-        rafFile.writeInt(matStatus.length);        
-        // Visit every cel of the matrix and save it
-        for (int iR = 0; iR < matStatus.length; iR++) {            
-                rafFile.writeInt(matStatus[iR]);            
-        }        */
-        ObjectOutputStream oosArchivo = new ObjectOutputStream(new FileOutputStream("Save.bin"));
+       
+        ObjectOutputStream miArchivo = new ObjectOutputStream(new FileOutputStream("Save.bin"));
 
-        oosArchivo.writeInt(this.getScore()); //GuardaScore
-        oosArchivo.writeInt(this.getFruitsEaten()); // Guarda Fruist Eaten
-        oosArchivo.writeInt(this.getNextFruitScore()); //Guarda Next Fruit Score
-        oosArchivo.writeObject(this.getDirections()); //Guarda Direction
-        oosArchivo.writeObject(this.getBoard().getTileType()); //Guarda Board y Tile Type
-        oosArchivo.writeBoolean(this.isGameOver()); //Guarda isGameOver
-        oosArchivo.writeBoolean(this.isNewGame()); //Guarda isNewGame
-        oosArchivo.writeObject(this.getSnake()); //Guarda los puntos del snake
+        miArchivo.writeInt(this.getScore()); //GuardaScore
+        miArchivo.writeInt(this.getFruitsEaten()); // Guarda Fruist Eaten
+        miArchivo.writeInt(this.getNextFruitScore()); //Guarda Next Fruit Score
+        miArchivo.writeObject(this.getDirections()); //Guarda Direction
+        miArchivo.writeObject(this.getBoard().getTileType()); //Guarda Board y Tile Type
+        miArchivo.writeBoolean(this.isGameOver()); //Guarda isGameOver
+        miArchivo.writeBoolean(this.isNewGame()); //Guarda isNewGame
+        miArchivo.writeObject(this.getSnake()); //Guarda los puntos del snake
         //cierro el archivo
-        oosArchivo.close();
+        miArchivo.close();
     }
 
     /**
@@ -869,41 +856,18 @@ public class SnakeGame extends JFrame {
      */
     public void cargaJuego() throws IOException, ClassNotFoundException {
         
-        /*RandomAccessFile rafFile = new RandomAccessFile("Save.dat", "rw");                
-        this.score = rafFile.readInt();
-        this.fruitsEaten = rafFile.readInt();
-        this.nextFruitScore = rafFile.readInt();
-                        
-        this.isGameOver = rafFile.readBoolean();
-        this.isNewGame = rafFile.readBoolean();
-        this.isPaused = rafFile.readBoolean(); 
+        ObjectInputStream miArchivo = new ObjectInputStream(new FileInputStream("Save.bin"));
         
-        logicTimer.reset();        
-        //Load board state, rows, and columns
-        int i = rafFile.readInt();        
-        int arrBoard[] = new int[i];
-        
-        Point head;
-        //Load every cell of the matrix
-        for (int iR = 0; iR < i; iR++) {            
-                arrBoard[iR] = rafFile.readInt();            
-        }
-        
-        
-        board.clear();                
-        board.setState(arrBoard);*/
-        ObjectInputStream oisArchivo = new ObjectInputStream(new FileInputStream("Save.bin"));
-        
-        this.setScore((int) oisArchivo.readInt()); //Lee el score y lo actualiza
-        this.setFruitsEaten((int) oisArchivo.readInt()); //lee el numero de frutas comidas y lo actualiza
-        this.setNextFruitScore((int) oisArchivo.readInt()); //lee  y actualiza el puntaje de la fruta 
-        this.setDirection((LinkedList) oisArchivo.readObject());//lee la direccion y la actualiza
-        this.getBoard().setTile((TileType [])oisArchivo.readObject()); //lee los tiles del board y actualiza
-        this.setGameOver((boolean) oisArchivo.readBoolean()); //lee y actualiza el GameOver
-        this.setNewGame((boolean) oisArchivo.readBoolean()); //lee y actualiza el NewGamew
-        this.setSnake((LinkedList) oisArchivo.readObject()); //lee y actualiza los puntos de la serpiente
+        this.setScore((int) miArchivo.readInt()); //Lee el score y lo actualiza
+        this.setFruitsEaten((int) miArchivo.readInt()); //lee el numero de frutas comidas y lo actualiza
+        this.setNextFruitScore((int) miArchivo.readInt()); //lee  y actualiza el puntaje de la fruta 
+        this.setDirection((LinkedList) miArchivo.readObject());//lee la direccion y la actualiza
+        this.getBoard().setTile((TileType [])miArchivo.readObject()); //lee los tiles del board y actualiza
+        this.setGameOver((boolean) miArchivo.readBoolean()); //lee y actualiza el GameOver
+        this.setNewGame((boolean) miArchivo.readBoolean()); //lee y actualiza el NewGamew
+        this.setSnake((LinkedList) miArchivo.readObject()); //lee y actualiza los puntos de la serpiente
         
         //cierro el archivo
-        oisArchivo.close();
+        miArchivo.close();
     }
 }
