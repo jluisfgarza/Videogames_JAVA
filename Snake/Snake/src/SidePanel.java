@@ -1,8 +1,11 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+import javax.swing.JPanel;
+import java.net.URL;
 
 import javax.swing.JPanel;
 
@@ -13,7 +16,10 @@ import javax.swing.JPanel;
  *
  */
 public class SidePanel extends JPanel {
-	
+	/**
+        * 
+        */
+        private Image imgControl;
 	/**
 	 * Serial Version UID.
 	 */
@@ -45,14 +51,15 @@ public class SidePanel extends JPanel {
 	 */
 	public SidePanel(SnakeGame game) {
 		this.game = game;
-		
+		URL urlImagen = this.getClass().getResource("Control.png");
+                imgControl = Toolkit.getDefaultToolkit().getImage(urlImagen);
 		setPreferredSize(new Dimension(300, BoardPanel.ROW_COUNT * BoardPanel.TILE_SIZE));
 		setBackground(Color.BLACK);
 	}
 	
-	private static final int STATISTICS_OFFSET = 150;
+	private static final int STATISTICS_OFFSET = 100;
 	
-	private static final int CONTROLS_OFFSET = 320;
+	private static final int CONTROLS_OFFSET = 250;
 	
 	private static final int MESSAGE_STRIDE = 30;
 	
@@ -94,11 +101,11 @@ public class SidePanel extends JPanel {
 		g.drawString("Fruit Score: " + game.getNextFruitScore(), LARGE_OFFSET, drawY += MESSAGE_STRIDE);
 		//Draw the content for the controls category.
 		drawY = CONTROLS_OFFSET;
-		g.drawString("Move Up: W / Up Arrowkey", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
-		g.drawString("Move Down: S / Down Arrowkey", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
-		g.drawString("Move Left: A / Left Arrowkey", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
-		g.drawString("Move Right: D / Right Arrowkey", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
+                g.drawImage(imgControl, 40, 400, this);		
 		g.drawString("Pause Game: P", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
+                g.drawString("Quit Game: Q", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
+                g.drawString("Save Game: G", LARGE_OFFSET, drawY += MESSAGE_STRIDE);
+                g.drawString("Load Game: C", LARGE_OFFSET, drawY += MESSAGE_STRIDE);                
 	}
 
 }

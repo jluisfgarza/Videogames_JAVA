@@ -1,23 +1,23 @@
 /**
  * @author Juan Luis Flores Garza A01280767, Carlos Serret A01281072
  */
-
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.RandomAccessFile;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * The {@code SnakeGame} class is responsible for handling much of the game's
@@ -242,6 +242,13 @@ public class SnakeGame extends JFrame {
                         if (isNewGame || isGameOver) {
                             resetGame();
                         }
+                        break;
+                        
+                    /*
+                     * Reset the game if one is not currently in progress.
+                     */
+                    case KeyEvent.VK_Q:
+                          dispose(); //CLOSE JFRAME               
                         break;
                 }
             }
@@ -832,13 +839,26 @@ public class SnakeGame extends JFrame {
     public void setNewGame(boolean bNewGame) {
         isNewGame = bNewGame;
     }
-     /**
+    
+    /**
+    *  Name of the file saving player's game 
+    */
+    private String sSave;
+        
+    /**
      * Guarda Archivo Guardda el juego en un archivo binario
      */
     public void guardaJuego() throws IOException {
        
-        ObjectOutputStream miArchivo = new ObjectOutputStream(new FileOutputStream("Save.bin"));
-
+        isPaused = true;                        // se pausa el juego en caso de no estar en pausa. 
+        logicTimer.setPaused(true);
+        
+        // Pedimos nombre de usuario
+        sSave = JOptionPane.showInputDialog("Con que nombre deseas " + "guardar tu juego:");
+        // guardamos el nombre de la partida en una lista        
+        sSave += ".bin";            
+        
+        ObjectOutputStream miArchivo = new ObjectOutputStream(new FileOutputStream(sSave));
         miArchivo.writeInt(this.getScore()); //GuardaScore
         miArchivo.writeInt(this.getFruitsEaten()); // Guarda Fruist Eaten
         miArchivo.writeInt(this.getNextFruitScore()); //Guarda Next Fruit Score
@@ -856,18 +876,31 @@ public class SnakeGame extends JFrame {
      */
     public void cargaJuego() throws IOException, ClassNotFoundException {
         
-        ObjectInputStream miArchivo = new ObjectInputStream(new FileInputStream("Save.bin"));
+        isPaused = true;                        // se pausa el juego en caso de no estar en pausa. 
+        logicTimer.setPaused(true);
         
-        this.setScore((int) miArchivo.readInt()); //Lee el score y lo actualiza
-        this.setFruitsEaten((int) miArchivo.readInt()); //lee el numero de frutas comidas y lo actualiza
-        this.setNextFruitScore((int) miArchivo.readInt()); //lee  y actualiza el puntaje de la fruta 
-        this.setDirection((LinkedList) miArchivo.readObject());//lee la direccion y la actualiza
-        this.getBoard().setTile((TileType [])miArchivo.readObject()); //lee los tiles del board y actualiza
-        this.setGameOver((boolean) miArchivo.readBoolean()); //lee y actualiza el GameOver
-        this.setNewGame((boolean) miArchivo.readBoolean()); //lee y actualiza el NewGamew
-        this.setSnake((LinkedList) miArchivo.readObject()); //lee y actualiza los puntos de la serpiente
-        
-        //cierro el archivo
-        miArchivo.close();
-    }
+        // Pedimos nombre de partida
+        sSave = JOptionPane.showInputDialog("Cual es el nombre de " + "tu partida:");
+            
+        // si existe procedemos a cargar en caso de no se crea el archivo vacio con el nombre
+            sSave += ".bin";
+            try {
+            ObjectInputStream miArchivo = new ObjectInputStream(new FileInputStream(sSave));                    
+            this.setScore((int) miArchivo.readInt()); //Lee el score y lo actualiza
+            this.setFruitsEaten((int) miArchivo.readInt()); //lee el numero de frutas comidas y lo actualiza
+            this.setNextFruitScore((int) miArchivo.readInt()); //lee  y actualiza el puntaje de la fruta 
+            this.setDirection((LinkedList) miArchivo.readObject());//lee la direccion y la actualiza
+            this.getBoard().setTile((TileType [])miArchivo.readObject()); //lee los tiles del board y actualiza
+            this.setGameOver((boolean) miArchivo.readBoolean()); //lee y actualiza el GameOver
+            this.setNewGame((boolean) miArchivo.readBoolean()); //lee y actualiza el NewGamew
+            this.setSnake((LinkedList) miArchivo.readObject()); //lee y actualiza los puntos de la serpiente                    
+            logicTimer.reset();
+            if(isPaused) 
+                logicTimer.setPaused(true);                            
+            //cierro el archivo
+            miArchivo.close();             
+            } catch (FileNotFoundException e) {            
+                JOptionPane.showMessageDialog(null,"No exsiste un usuario con ese nombre");
+            }
+        }             
 }
