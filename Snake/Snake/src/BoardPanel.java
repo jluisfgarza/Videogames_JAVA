@@ -3,7 +3,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
@@ -67,6 +69,11 @@ public class BoardPanel extends JPanel {
      * The array of tiles that make up this board.
      */
     private TileType[] tiles;
+    
+    /**
+     * IMAGE for barckground
+     */
+    private Image imaback;
 
     /**
      * Creates a new BoardPanel instance.
@@ -76,6 +83,9 @@ public class BoardPanel extends JPanel {
     public BoardPanel(SnakeGame game) {
         this.game = game;
         this.tiles = new TileType[ROW_COUNT * COL_COUNT];
+        
+        imaback = Toolkit.getDefaultToolkit().getImage(this.getClass().
+               getResource("Fondo.png"));  
 
         setPreferredSize(new Dimension(COL_COUNT * TILE_SIZE,
                 ROW_COUNT * TILE_SIZE));
@@ -126,7 +136,11 @@ public class BoardPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        //IN case of an existing image for the background, draw it
+        if(imaback!=null) {
+                    
+            g.drawImage(imaback, 0, 0, 500, 500, this);
+        }
         /*
          * Loop through each tile on the board and draw it if it
          * is not null.

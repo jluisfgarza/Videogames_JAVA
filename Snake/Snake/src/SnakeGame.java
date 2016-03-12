@@ -82,6 +82,16 @@ public class SnakeGame extends JFrame {
     private final SoundClip scBackMusic = new SoundClip("game1.wav");
     
     /**
+     * eat fruit music
+     */
+    private final SoundClip scFruitMusic = new SoundClip("error.wav");
+    
+    /**
+     * error music
+     */
+    private final SoundClip scErrorMusic = new SoundClip("Explosion.wav");
+    
+    /**
      * Whether or not the game is over.
      */
     private boolean isGameOver;
@@ -388,25 +398,30 @@ public class SnakeGame extends JFrame {
          * yield a higher score.
          */
         if (collision == TileType.Fruit) {
+            scFruitMusic.play();
             fruitsEaten++;
             score += nextFruitScore;
             spawnFruit();
             currentTileType = TileType.Fruit;
         } else if (collision == TileType.Fruit1){
+            scFruitMusic.play();
             fruitsEaten++;
             score += nextFruitScore;
             spawnFruit();
             currentTileType = TileType.Fruit1;
         } else if (collision == TileType.Fruit2){
+            scFruitMusic.play();
             fruitsEaten++;
             score += nextFruitScore;
             spawnFruit();
             currentTileType = TileType.Fruit2;
         } else if (collision == TileType.SnakeBody) {
+            scErrorMusic.play();
             isGameOver = true;
             logicTimer.setPaused(true);
             scBackMusic.stop();
         } else if (collision == TileType.Badfruit) {
+            scErrorMusic.play();
             isGameOver = true;
             logicTimer.setPaused(true);
             scBackMusic.stop();
