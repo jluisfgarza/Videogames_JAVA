@@ -254,12 +254,7 @@ public class SnakeGame extends JFrame {
                         }
                         break;
                         
-                    /*
-                     * Reset the game if one is not currently in progress.
-                     */
-                    case KeyEvent.VK_Q:
-                          dispose(); //CLOSE JFRAME               
-                        break;
+                   
                 }
             }
             
@@ -271,16 +266,19 @@ public class SnakeGame extends JFrame {
                       case KeyEvent.VK_G:
                         if (!isGameOver) {
                             try {
-                                guardaJuego();
+                                scBackMusic.stop();                            
+                                guardaJuego();                                
                             } catch (IOException ioE) {
                             }
+                            
                         }
                         break;
                         //Tecla C  - Carga el juego
                     case KeyEvent.VK_C:
                         if (!isGameOver) {
                             try {
-                                cargaJuego();
+                                scBackMusic.stop();                            
+                                cargaJuego();                                
                             } catch (IOException ioE) {
                             } catch (ClassNotFoundException ex) {
                             Logger.getLogger(SnakeGame.class.getName()).
@@ -288,6 +286,14 @@ public class SnakeGame extends JFrame {
                     }
                         }
                     break;
+                    
+                     /*
+                     * Reset the game if one is not currently in progress.
+                     */
+                    case KeyEvent.VK_Q:
+                       dispose(); //CLOSE JFRAME               
+                       System.exit(0); 
+                        break;
                 }
                 
             }
