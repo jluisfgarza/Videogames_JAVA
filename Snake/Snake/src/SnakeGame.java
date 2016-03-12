@@ -77,6 +77,11 @@ public class SnakeGame extends JFrame {
     private boolean isNewGame;
 
     /**
+     * Background music
+     */
+    private final SoundClip scBackMusic = new SoundClip("game1.wav");
+    
+    /**
      * Whether or not the game is over.
      */
     private boolean isGameOver;
@@ -125,7 +130,7 @@ public class SnakeGame extends JFrame {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-
+        scBackMusic.setLooping(true);
         /*
          * Initialize the game's panels and add them to the window.
          */
@@ -232,7 +237,12 @@ public class SnakeGame extends JFrame {
                         if (!isGameOver) {
                             isPaused = !isPaused;
                             logicTimer.setPaused(isPaused);
+                            scBackMusic.play();
+                            if (isPaused){
+                                scBackMusic.stop();
+                            }
                         }
+                        
                         break;
 
                     /*
@@ -273,7 +283,8 @@ public class SnakeGame extends JFrame {
                                 cargaJuego();
                             } catch (IOException ioE) {
                             } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(SnakeGame.class.getName()).
+                                    log(Level.SEVERE, null, ex); 
                     }
                         }
                     break;
@@ -388,9 +399,11 @@ public class SnakeGame extends JFrame {
         } else if (collision == TileType.SnakeBody) {
             isGameOver = true;
             logicTimer.setPaused(true);
+            scBackMusic.stop();
         } else if (collision == TileType.Badfruit) {
             isGameOver = true;
             logicTimer.setPaused(true);
+            scBackMusic.stop();
         } else if (nextFruitScore > 10) {
             nextFruitScore--;
         }
@@ -544,6 +557,7 @@ public class SnakeGame extends JFrame {
          * Reset the logic timer.
          */
         logicTimer.reset();
+        scBackMusic.play();
 
         /*
          * Spawn a new fruit.
@@ -775,7 +789,7 @@ public class SnakeGame extends JFrame {
     
     /*
     * @func setSnake()
-    * Funcion que cambia los valores de la lista encadenada de puntos de la snake
+    * Funcion cambia los valores de la lista encadenada de puntos de la snake
     */
     public void setSnake(LinkedList <Point> sSnake) {
         //cambio el valor de los puntos de la snake
@@ -875,32 +889,33 @@ public class SnakeGame extends JFrame {
      * Carga juego Carga el juego a partir del archivo binario
      */
     public void cargaJuego() throws IOException, ClassNotFoundException {
-        
+
         isPaused = true;                        // se pausa el juego en caso de no estar en pausa. 
         logicTimer.setPaused(true);
-        
+
         // Pedimos nombre de partida
         sSave = JOptionPane.showInputDialog("Cual es el nombre de " + "tu partida:");
-            
+
         // si existe procedemos a cargar en caso de no se crea el archivo vacio con el nombre
-            sSave += ".bin";
-            try {
-            ObjectInputStream miArchivo = new ObjectInputStream(new FileInputStream(sSave));                    
+        sSave += ".bin";
+        try {
+            ObjectInputStream miArchivo = new ObjectInputStream(new FileInputStream(sSave));
             this.setScore((int) miArchivo.readInt()); //Lee el score y lo actualiza
             this.setFruitsEaten((int) miArchivo.readInt()); //lee el numero de frutas comidas y lo actualiza
             this.setNextFruitScore((int) miArchivo.readInt()); //lee  y actualiza el puntaje de la fruta 
             this.setDirection((LinkedList) miArchivo.readObject());//lee la direccion y la actualiza
-            this.getBoard().setTile((TileType [])miArchivo.readObject()); //lee los tiles del board y actualiza
+            this.getBoard().setTile((TileType[]) miArchivo.readObject()); //lee los tiles del board y actualiza
             this.setGameOver((boolean) miArchivo.readBoolean()); //lee y actualiza el GameOver
             this.setNewGame((boolean) miArchivo.readBoolean()); //lee y actualiza el NewGamew
             this.setSnake((LinkedList) miArchivo.readObject()); //lee y actualiza los puntos de la serpiente                    
             logicTimer.reset();
-            if(isPaused) 
-                logicTimer.setPaused(true);                            
-            //cierro el archivo
-            miArchivo.close();             
-            } catch (FileNotFoundException e) {            
-                JOptionPane.showMessageDialog(null,"No exsiste un usuario con ese nombre");
+            if (isPaused) {
+                logicTimer.setPaused(true);
             }
-        }             
+            //cierro el archivo
+            miArchivo.close();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "No exsiste un usuario con ese nombre");
+        }
+    }
 }
